@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\si2aa\\\\Downloads\\\\Energy Management System Dashboard \\(Community\\)\" -Recurse -File)",
+      "Bash(Select-Object FullName)"
+    ]
+  }
+}
