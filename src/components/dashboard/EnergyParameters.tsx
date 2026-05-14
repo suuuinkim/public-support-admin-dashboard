@@ -39,16 +39,16 @@ const energyParameters = [
 
 function EnergyParameters() {
     return(
-        <div className="energyParameters">
+        <div className="energy-parameters">
             {energyParameters.map((parameter) => (
                 <div key={parameter.name} className="energy-parameter-card">
-                    <div className="enerty-parameter-header">
+                    <div className="energy-parameter-header">
                         <span>{parameter.name}</span>
                         <span className="energy-status">{parameter.status}</span>
                     </div>
 
                     <div className="energy-parameter-value">
-                        <strong>{parameter.name}</strong>
+                        <strong>{parameter.value}</strong>
                         {parameter.unit && <span>{parameter.unit}</span>}
                     </div>
 
