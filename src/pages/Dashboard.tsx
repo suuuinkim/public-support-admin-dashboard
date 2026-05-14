@@ -2,6 +2,8 @@ import Card from '../components/common/Card'
 import EnergyParameters from "../components/dashboard/EnergyParameters.tsx";
 import {useState} from 'react'
 import FilterSection from "../components/dashboard/FilterSection.tsx";
+import ConsumptionChart from "../components/dashboard/ConsumptionChart.tsx";
+import DemandChart from "../components/dashboard/DemandChart.tsx";
 
 const dashboardSummaryByTarget = {
     'device-1': {
@@ -104,6 +106,10 @@ function Dashboard() {
 
             <EnergyParameters/>
 
+            <div className="chart-grid">
+                <ConsumptionChart targetName={selectedTarget?.label ?? 'Unknown'} day={day} />
+                <DemandChart dataMode={dataMode} />
+            </div>
 
         </section>
     )
