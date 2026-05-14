@@ -1,4 +1,29 @@
+import Card from '../components/common/Card'
+import EnergyParameters from "../components/dashboard/EnergyParameters.tsx";
+import {useState} from 'react'
+import FilterSection from "../components/dashboard/FilterSection.tsx";
+
+const summaryCards = [
+    {
+        label : 'Total Consumption',
+        value : '12345'
+    },
+    {
+        label : 'Peak Demand',
+        value : '1234'
+    },
+    {
+        label : 'Power Factor',
+        value : '0.96'
+    }
+]
+
 function Dashboard() {
+    const [filterType, setFilterType] = useState('device')
+    const [device, setDevice] = useState('device-1')
+    const [dataMode, setDataMode] = useState('real-time')
+    const [day, setDay] = useState('today')
+
     return(
         <section className="dashboard-page">
             <header className="dashboard-header">
@@ -9,26 +34,30 @@ function Dashboard() {
 
                 <div className="status-badge">
                     <span className="status-dot" />
-                        Real-time monitoring active
+                    Real-time monitoring active
                 </div>
             </header>
+
+            <FilterSection
+                filterType={filterType}
+                setFilterType={setFilterType}
+                device={device}
+                setDevice={setDevice}
+                dataMode={dataMode}
+                setDataMode={setDataMode}
+                day={day}
+                setDay={setDay}
+            />
             <div className="dashboard-grid">
-                <div className="card summary-card">
-                    <p>Total Consumption</p>
-                    <strong>12345</strong>
-                </div>
-
-                <div className="card summary-card">
-                    <p>Peak Demand</p>
-                    <strong>1,204 kw</strong>
-                </div>
-
-                <div className="card summary-card">
-                    <p>Power Factor</p>
-                    <strong>0.96</strong>
-                </div>
+                {summaryCards.map((card) => (
+                    <Card key={card.label} className="summary-card">
+                        <p>{card.label}</p>
+                        <strong>{card.value}</strong>
+                    </Card>
+                ))}
             </div>
 
+            <EnergyParameters/>
 
 
         </section>
