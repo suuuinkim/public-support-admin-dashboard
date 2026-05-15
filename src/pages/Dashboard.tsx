@@ -5,7 +5,45 @@ import QualificationCategoryChart from '../components/dashboard/QualificationCat
 import QualificationSummaryCards from '../components/dashboard/QualificationSummaryCards'
 import YearlyTrendChart from '../components/dashboard/YearlyTrendChart'
 import {filterTargets} from '../data/dashboardData'
-import {fetchDashboardSummary, type DashboardSummary} from '../services/dashboardService'
+import {
+    createEmploymentSummary,
+    createRegionTopFive,
+    fetchEmploymentRows,
+} from '../services/kosisService'
+import type {EmploymentSummary, RegionEmploymentRank} from '../types/kosis'
+
+const dataModeLabels: Record<string, string> = {
+    'real-time': '최근 연도',
+    historical: '연도별 추이',
+    combined: '통합 조회',
+}
+
+const periodLabels: Record<string, string> = {
+    today: '2024',
+    yesterday: '2023',
+    'last-7-days': '2021-2024',
+    'last-30-days': '2020-2024',
+}
+
+function getKosisRegionName(regionName?: string) {
+    if (regionName === '서울') return '서울특별시'
+    if (regionName === '경기') return '경기도'
+    if (regionName === '부산') return '부산광역시'
+
+    return regionName ?? '계'
+}
+
+function formatRate(value: number | null | undefined) {
+    return value !== null && value !== undefined ? `${value}%` : '-'
+}
+
+function formatPoint(value: number | null | undefined) {
+    if (value === null || value === undefined) {
+        return '-'
+    }
+
+    return `${value > 0 ? '+' : ''}${value}%p`
+}
 
 function Dashboard() {
     const [filterType, setFilterType] = useState('device')
@@ -13,52 +51,55 @@ function Dashboard() {
     const [dataMode, setDataMode] = useState('real-time')
     const [day, setDay] = useState('today')
     const selectedTarget = filterTargets.find((target) => target.value === device)
-    const [summary, setSummary] = useState<DashboardSummary | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
+    const [employmentSummary, setEmploymentSummary] = useState<EmploymentSummary | null>(null)
+    const [regionTopFive, setRegionTopFive] = useState<RegionEmploymentRank[]>([])
+    const [isEmploymentLoading, setIsEmploymentLoading] = useState(false)
+    const [employmentErrorMessage, setEmploymentErrorMessage] = useState('')
 
-    const dataModeLabel = {
-        'real-time': '최근 연도',
-        historical: '연도별 추이',
-        combined: '통합 조회',
-    }[dataMode] ?? dataMode
-
-    const dayLabel = {
-        today: '2024',
-        yesterday: '2023',
-        'last-7-days': '2021-2024',
-        'last-30-days': '2020-2024',
-    }[day] ?? day
+    const dataModeLabel = dataModeLabels[dataMode] ?? dataMode
+    const dayLabel = periodLabels[day] ?? day
 
     useEffect(() => {
-        setIsLoading(true)
-        setErrorMessage('')
+        const selectedRegionName = getKosisRegionName(selectedTarget?.label)
 
-        fetchDashboardSummary(device)
-            .then((data) => {
-                setSummary(data)
+        setIsEmploymentLoading(true)
+        setEmploymentErrorMessage('')
+
+        fetchEmploymentRows()
+            .then((rows) => {
+                setEmploymentSummary(createEmploymentSummary(rows, selectedRegionName))
+                setRegionTopFive(createRegionTopFive(rows))
             })
             .catch(() => {
-                setSummary(null)
-                setErrorMessage('대시보드 요약 정보를 불러오지 못했습니다.')
+                setEmploymentSummary(null)
+                setRegionTopFive([])
+                setEmploymentErrorMessage('KOSIS 고용률 데이터를 불러오지 못했습니다.')
             })
             .finally(() => {
-                setIsLoading(false)
+                setIsEmploymentLoading(false)
             })
-    }, [device])
+    }, [selectedTarget?.label])
 
-    const summaryCards = [
+    const employmentCards = [
         {
-            label: '총 자격 취득자',
-            value: summary?.certifiedPeople ?? '-',
+            label: '전국 최신 고용률',
+            value: formatRate(employmentSummary?.nationalRate),
+            description: employmentSummary ? `${employmentSummary.latestPeriod}년 기준` : 'KOSIS 고용률',
         },
         {
-            label: '자격 종목 수',
-            value: summary?.qualificationItems ?? '-',
+            label: '선택 지역 고용률',
+            value: formatRate(employmentSummary?.selectedRegionRate),
+            description: selectedTarget?.label ?? '선택 지역',
         },
         {
-            label: '전년 대비 증가율',
-            value: summary?.growthRate ?? '-',
+            label: '전년 대비 증감',
+            value: formatPoint(employmentSummary?.yearlyChange),
+            description: '선택 지역 기준',
+        },
+        {
+            label: '남녀 고용률 차이',
+            value: formatPoint(employmentSummary?.genderGap),
+            description: '남자 - 여자',
         },
     ]
 
@@ -66,13 +107,13 @@ function Dashboard() {
         <section className="dashboard-page">
             <header className="dashboard-header">
                 <div>
-                    <h1>지역 일자리·자격 통계 대시보드</h1>
-                    <p>지역, 자격군, 연도별 자격 취득 현황과 수요 흐름을 확인합니다.</p>
+                    <h1>지역 고용 통계 대시보드</h1>
+                    <p>지역, 성별, 연도별 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
                 </div>
 
                 <div className="status-badge">
                     <span className="status-dot"/>
-                    공공데이터 조회 기준 적용 중
+                    KOSIS 고용률 데이터 연동 중
                 </div>
             </header>
 
@@ -93,22 +134,51 @@ function Dashboard() {
                 <span>{dataModeLabel} / {dayLabel}</span>
             </div>
 
-            {errorMessage && (
+            {employmentErrorMessage && (
                 <div className="error-message">
-                    {errorMessage}
+                    {employmentErrorMessage}
                 </div>
             )}
 
             <div className="dashboard-grid">
-                {summaryCards.map((card) => (
+                {employmentCards.map((card) => (
                     <Card key={card.label} className="summary-card">
                         <p>{card.label}</p>
-                        <strong>{isLoading ? '로딩 중...' : card.value}</strong>
+                        <strong>{isEmploymentLoading ? '로딩 중...' : card.value}</strong>
+                        <span className="summary-card-description">{card.description}</span>
                     </Card>
                 ))}
             </div>
 
             <QualificationSummaryCards/>
+
+            <Card className="employment-ranking-card">
+                <div className="chart-header">
+                    <h2>지역별 고용률 Top 5</h2>
+                    <p>KOSIS 최신 연도 기준 지역별 고용률 순위입니다.</p>
+                </div>
+
+                {isEmploymentLoading ? (
+                    <div className="empty-table-message">고용률 순위를 불러오는 중입니다.</div>
+                ) : regionTopFive.length === 0 ? (
+                    <div className="empty-table-message">표시할 고용률 순위가 없습니다.</div>
+                ) : (
+                    <div className="employment-ranking-list">
+                        {regionTopFive.map((region, index) => (
+                            <div key={region.regionCode} className="employment-ranking-row">
+                                <span className="employment-ranking-rank">{index + 1}</span>
+
+                                <div>
+                                    <strong>{region.regionName}</strong>
+                                    <p>지역 코드 {region.regionCode}</p>
+                                </div>
+
+                                <strong>{region.rate}%</strong>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </Card>
 
             <div className="chart-grid">
                 <QualificationCategoryChart targetName={selectedTarget?.label ?? '알 수 없음'} period={dayLabel}/>
