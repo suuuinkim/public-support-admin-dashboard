@@ -1,39 +1,4 @@
 const KOSIS_URL = 'https://kosis.kr/openapi/Param/statisticsParameterData.do'
-const FETCH_TIMEOUT_MS = 10000
-const RETRY_COUNT = 2
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
-async function fetchWithRetry(url) {
-  let lastError
-
-  for (let attempt = 0; attempt <= RETRY_COUNT; attempt += 1) {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
-
-    try {
-      const result = await fetch(url, {
-        signal: controller.signal,
-        headers: {
-          Accept: 'application/json,text/plain,*/*',
-          'User-Agent': 'public-support-admin-dashboard/1.0',
-        },
-      })
-
-      clearTimeout(timeoutId)
-      return result
-    } catch (error) {
-      clearTimeout(timeoutId)
-      lastError = error
-
-      if (attempt < RETRY_COUNT) {
-        await sleep(500 * (attempt + 1))
-      }
-    }
-  }
-
-  throw lastError
-}
 
 export default async function handler(request, response) {
   if (request.method !== 'GET') {
@@ -76,26 +41,10 @@ export default async function handler(request, response) {
     tblId: tableId,
   })
 
-  const kosisApiUrl = `${KOSIS_URL}?${params.toString()}`
-  let kosisResponse
-
-  try {
-    kosisResponse = await fetchWithRetry(kosisApiUrl)
-  } catch (error) {
-    console.error('KOSIS fetch failed', error)
-    response.status(502).json({
-      message: 'KOSIS API connection failed',
-      detail: error instanceof Error ? error.message : 'Unknown error',
-    })
-    return
-  }
+  const kosisResponse = await fetch(`${KOSIS_URL}?${params.toString()}`)
 
   if (!kosisResponse.ok) {
-    const errorText = await kosisResponse.text()
-    response.status(kosisResponse.status).json({
-      message: 'Failed to fetch KOSIS employment data',
-      detail: errorText.slice(0, 500),
-    })
+    response.status(kosisResponse.status).json({message: 'Failed to fetch KOSIS employment data'})
     return
   }
 
