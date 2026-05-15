@@ -486,6 +486,15 @@
     .report-clear-button {
         width: 100%;
     }
+
+    .configuration-page {
+        padding: 16px;
+    }
+
+    .qualification-group-list,
+    .configuration-form-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .analytics-page {
@@ -673,4 +682,106 @@
     padding: 0 12px;
     font-size: 13px;
     white-space: nowrap;
+}
+
+.configuration-page {
+    padding: 24px;
+}
+
+.configuration-card {
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.configuration-card:last-child {
+    margin-bottom: 0;
+}
+
+.qualification-group-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.qualification-group-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--secondary);
+    cursor: pointer;
+    font-weight: 500;
+    transition: border-color .15s, background .15s;
+}
+
+.qualification-group-item:hover {
+    border-color: var(--primary);
+    background: #f8fffb;
+}
+
+.qualification-group-item input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+}
+
+.configuration-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 220px;
+    gap: 16px;
+    align-items: end;
+}
+
+.configuration-summary-box {
+    height: 42px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 12px;
+    border-radius: var(--radius);
+    background: var(--secondary);
+}
+
+.configuration-summary-box span {
+    color: var(--muted-foreground);
+    font-size: 12px;
+}
+
+.configuration-summary-box strong {
+    margin-top: 2px;
+}
+
+@media (max-width: 1100px) {
+    .qualification-group-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .configuration-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .configuration-summary-box {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 760px) {
+    .configuration-page {
+        padding: 16px;
+    }
+
+    .qualification-group-list,
+    .configuration-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .configuration-summary-box {
+        grid-column: auto;
+    }
+
+    .configuration-card {
+        overflow-x: auto;
+    }
 }
