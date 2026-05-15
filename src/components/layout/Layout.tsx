@@ -13,9 +13,9 @@ function Layout() {
             <main className="app-main">
                 {page === 'dashboard' && <Dashboard />}
                 {page === 'analytics' && <Analytics />}
-                {page === 'configuration' && <div className="page-placeholder">Configuration</div>}
+                {page === 'configuration' && <div className="page-placeholder">설정 관리 - 관심 자격군, 분석 기준 연도, 지역 코드 설정</div>}
                 {page === 'reports' && <Reports />}
-                {page ==='settings' && <div className="page-placeholder">Settings</div>}
+                {page ==='settings' && <div className="page-placeholder">환경 설정 - 사용자 프로필, 기본 조회 지역, 기본 조회 기간</div>}
             </main>
         </div>
     )

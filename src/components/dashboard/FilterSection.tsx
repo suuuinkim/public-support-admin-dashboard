@@ -1,5 +1,5 @@
 import Card from '../common/Card'
-import { filterDevices, filterGroups } from '../../data/dashboardData'
+import {filterDevices, filterGroups} from '../../data/dashboardData'
 
 type FilterSectionProps = {
   filterType: string
@@ -22,13 +22,13 @@ function FilterSection({
   day,
   setDay,
 }: FilterSectionProps) {
-  const deviceOptions = filterType === 'device' ? filterDevices : filterGroups
+  const regionOptions = filterType === 'device' ? filterDevices : filterGroups
 
   return (
     <Card className="filter-card">
       <div className="filter-grid">
         <label className="filter-field">
-          <span>Filter Type</span>
+          <span>조회 유형</span>
           <select
             value={filterType}
             onChange={(event) => {
@@ -37,15 +37,15 @@ function FilterSection({
               setDevice(nextFilterType === 'device' ? 'device-1' : 'group-production')
             }}
           >
-            <option value="device">Individual Device</option>
-            <option value="virtual-group">Virtual Group</option>
+            <option value="device">지역</option>
+            <option value="virtual-group">권역</option>
           </select>
         </label>
 
         <label className="filter-field">
-          <span>{filterType === 'device' ? 'Select Device' : 'Select Group'}</span>
+          <span>{filterType === 'device' ? '지역 선택' : '권역 선택'}</span>
           <select value={device} onChange={(event) => setDevice(event.target.value)}>
-            {deviceOptions.map((option) => (
+            {regionOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -54,25 +54,25 @@ function FilterSection({
         </label>
 
         <label className="filter-field">
-          <span>Data Mode</span>
+          <span>데이터 범위</span>
           <select value={dataMode} onChange={(event) => setDataMode(event.target.value)}>
-            <option value="real-time">Real-Time</option>
-            <option value="historical">Historical</option>
-            <option value="combined">Combined</option>
+            <option value="real-time">최근 연도</option>
+            <option value="historical">연도별 추이</option>
+            <option value="combined">통합 조회</option>
           </select>
         </label>
 
         <label className="filter-field">
-          <span>Time Period</span>
+          <span>분석 기간</span>
           <select value={day} onChange={(event) => setDay(event.target.value)}>
-            <option value="today">Today</option>
-            <option value="yesterday">Yesterday</option>
-            <option value="last-7-days">Last 7 Days</option>
-            <option value="last-30-days">Last 30 Days</option>
+            <option value="today">2024</option>
+            <option value="yesterday">2023</option>
+            <option value="last-7-days">2021-2024</option>
+            <option value="last-30-days">2020-2024</option>
           </select>
         </label>
 
-        <button className="btn btn-primary filter-button">Apply Filter</button>
+        <button className="btn btn-primary filter-button">필터 적용</button>
       </div>
     </Card>
   )

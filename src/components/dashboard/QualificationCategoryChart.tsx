@@ -1,32 +1,32 @@
-import { consumptionData } from '../../data/dashboardData'
+import {qualificationCategoryData} from '../../data/dashboardData'
 import Card from '../common/Card'
 
-type ConsumptionProps = {
+type QualificationCategoryChartProps = {
   targetName: string
-  day: string
+  period: string
 }
 
-function ConsumptionChart({ targetName, day }: ConsumptionProps) {
+function QualificationCategoryChart({targetName, period}: QualificationCategoryChartProps) {
   return (
     <Card className="chart-card">
       <div className="chart-header">
         <div>
-          <h2>Energy Consumption</h2>
+          <h2>인기 자격군 현황</h2>
           <p>
-            {targetName} / {day}
+            {targetName} / {period}
           </p>
         </div>
       </div>
 
       <div className="bar-list">
-        {consumptionData.map((item) => (
+        {qualificationCategoryData.map((item) => (
           <div key={item.label} className="bar-row">
             <div className="bar-row-label">
               <span>{item.label}</span>
               <strong>{item.value}%</strong>
             </div>
             <div className="bar-track">
-              <div className="bar-fill" style={{ width: `${item.value}%` }} />
+              <div className="bar-fill" style={{width: `${item.value}%`}} />
             </div>
           </div>
         ))}
@@ -35,4 +35,4 @@ function ConsumptionChart({ targetName, day }: ConsumptionProps) {
   )
 }
 
-export default ConsumptionChart
+export default QualificationCategoryChart

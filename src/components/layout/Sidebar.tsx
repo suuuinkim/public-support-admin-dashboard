@@ -4,17 +4,17 @@ type SidebarProps = {
 }
 
 const menuItems = [
-    {id : 'dashboard', label : 'Dashboard'},
-    {id : 'analytics', label : 'Analytics'},
-    {id : 'configuration', label : 'Configuration'},
-    {id : 'reports', label : 'Reports'},
-    {id : 'settings', label : 'Settings'}
+    {id : 'dashboard', label : '대시보드'},
+    {id : 'analytics', label : '분석'},
+    {id : 'configuration', label : '설정 관리'},
+    {id : 'reports', label : '리포트'},
+    {id : 'settings', label : '환경 설정'}
 ]
 
 function Sidebar({page, setPage} : SidebarProps) {
     return (
         <aside className="sidebar">
-            <div className="sidebar-logo">EMS</div>
+            <div className="sidebar-logo">자격</div>
 
             <nav className="sidebar-nav">
                 {menuItems.map((item) => (

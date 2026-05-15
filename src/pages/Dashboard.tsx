@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react'
 import Card from '../components/common/Card'
-import EnergyParameters from '../components/dashboard/EnergyParameters'
 import FilterSection from '../components/dashboard/FilterSection'
-import ConsumptionChart from '../components/dashboard/ConsumptionChart'
-import DemandChart from '../components/dashboard/DemandChart'
+import QualificationCategoryChart from '../components/dashboard/QualificationCategoryChart'
+import QualificationSummaryCards from '../components/dashboard/QualificationSummaryCards'
+import YearlyTrendChart from '../components/dashboard/YearlyTrendChart'
 import {filterTargets} from '../data/dashboardData'
-import {fetchDashboardSummary, type DashboardSummary} from "../services/dashboardService";
+import {fetchDashboardSummary, type DashboardSummary} from '../services/dashboardService'
 
 function Dashboard() {
     const [filterType, setFilterType] = useState('device')
@@ -17,6 +17,19 @@ function Dashboard() {
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
+    const dataModeLabel = {
+        'real-time': '최근 연도',
+        historical: '연도별 추이',
+        combined: '통합 조회',
+    }[dataMode] ?? dataMode
+
+    const dayLabel = {
+        today: '2024',
+        yesterday: '2023',
+        'last-7-days': '2021-2024',
+        'last-30-days': '2020-2024',
+    }[day] ?? day
+
     useEffect(() => {
         setIsLoading(true)
         setErrorMessage('')
@@ -27,7 +40,7 @@ function Dashboard() {
             })
             .catch(() => {
                 setSummary(null)
-                setErrorMessage('Failed to load dashboard summary')
+                setErrorMessage('대시보드 요약 정보를 불러오지 못했습니다.')
             })
             .finally(() => {
                 setIsLoading(false)
@@ -36,32 +49,30 @@ function Dashboard() {
 
     const summaryCards = [
         {
-            label: 'Total Consumption',
-            value: summary?.consumption ?? '-',
+            label: '총 자격 취득자',
+            value: summary?.certifiedPeople ?? '-',
         },
         {
-            label: 'Peak Demand',
-            value: summary?.peakDemand ?? '-',
+            label: '자격 종목 수',
+            value: summary?.qualificationItems ?? '-',
         },
         {
-            label: 'Power Factor',
-            value: summary?.powerFactor ?? '-',
+            label: '전년 대비 증가율',
+            value: summary?.growthRate ?? '-',
         },
     ]
-
-
 
     return (
         <section className="dashboard-page">
             <header className="dashboard-header">
                 <div>
-                    <h1>Hello, Liam Gallagher!</h1>
-                    <p>What are you looking for today?</p>
+                    <h1>지역 일자리·자격 통계 대시보드</h1>
+                    <p>지역, 자격군, 연도별 자격 취득 현황과 수요 흐름을 확인합니다.</p>
                 </div>
 
                 <div className="status-badge">
                     <span className="status-dot"/>
-                    Real-time monitoring active
+                    공공데이터 조회 기준 적용 중
                 </div>
             </header>
 
@@ -77,9 +88,9 @@ function Dashboard() {
             />
 
             <div className="filter-summary">
-                <span>Current target</span>
+                <span>현재 조회 범위</span>
                 <strong>{selectedTarget?.label}</strong>
-                <span>{dataMode} / {day}</span>
+                <span>{dataModeLabel} / {dayLabel}</span>
             </div>
 
             {errorMessage && (
@@ -87,20 +98,21 @@ function Dashboard() {
                     {errorMessage}
                 </div>
             )}
+
             <div className="dashboard-grid">
                 {summaryCards.map((card) => (
                     <Card key={card.label} className="summary-card">
                         <p>{card.label}</p>
-                        <strong>{isLoading ? 'Loading...' : card.value}</strong>
+                        <strong>{isLoading ? '로딩 중...' : card.value}</strong>
                     </Card>
                 ))}
             </div>
 
-            <EnergyParameters/>
+            <QualificationSummaryCards/>
 
             <div className="chart-grid">
-                <ConsumptionChart targetName={selectedTarget?.label ?? 'Unknown'} day={day}/>
-                <DemandChart dataMode={dataMode}/>
+                <QualificationCategoryChart targetName={selectedTarget?.label ?? '알 수 없음'} period={dayLabel}/>
+                <YearlyTrendChart dataScope={dataModeLabel}/>
             </div>
         </section>
     )
