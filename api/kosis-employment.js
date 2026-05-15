@@ -22,7 +22,7 @@ export default async function handler(request, response) {
   const params = new URLSearchParams({
     method: 'getList',
     apiKey,
-    itmId: `${itemId} `,
+    itmId: `${itemId}`,
     objL1: 'ALL',
     objL2: 'ALL',
     objL3: '',
