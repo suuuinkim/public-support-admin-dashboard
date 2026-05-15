@@ -1,4 +1,4 @@
-const KOSIS_URL = 'https://kosis.kr/openapi/Param/statisticsParameterData.do'
+const KOSIS_URL = 'http://kosis.kr/openapi/Param/statisticsParameterData.do'
 
 export default async function handler(request, response) {
   if (request.method !== 'GET') {
