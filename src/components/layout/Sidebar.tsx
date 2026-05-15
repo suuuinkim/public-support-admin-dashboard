@@ -1,35 +1,155 @@
+import {useState, type ComponentType, type ReactNode} from 'react'
+
 type SidebarProps = {
-    page : string
-    setPage : (page: string) => void
+    page: string
+    setPage: (page: string) => void
 }
 
-const menuItems = [
-    {id : 'dashboard', label : '대시보드'},
-    {id : 'analytics', label : '분석'},
-    {id : 'configuration', label : '설정 관리'},
-    {id : 'reports', label : '리포트'},
-    {id : 'settings', label : '환경 설정'}
+type IconProps = {
+    className?: string
+}
+
+type MenuItem = {
+    id: string
+    label: string
+    description: string
+    Icon: ComponentType<IconProps>
+}
+
+function IconBase({children, className}: {children: ReactNode; className?: string}) {
+    return (
+        <svg
+            className={className}
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+        >
+            {children}
+        </svg>
+    )
+}
+
+function DashboardIcon({className}: IconProps) {
+    return (
+        <IconBase className={className}>
+            <rect width="7" height="9" x="3" y="3" rx="1"/>
+            <rect width="7" height="5" x="14" y="3" rx="1"/>
+            <rect width="7" height="9" x="14" y="12" rx="1"/>
+            <rect width="7" height="5" x="3" y="16" rx="1"/>
+        </IconBase>
+    )
+}
+
+function AnalyticsIcon({className}: IconProps) {
+    return (
+        <IconBase className={className}>
+            <path d="M3 3v18h18"/>
+            <path d="M18 17V9"/>
+            <path d="M13 17V5"/>
+            <path d="M8 17v-3"/>
+        </IconBase>
+    )
+}
+
+function ConfigurationIcon({className}: IconProps) {
+    return (
+        <IconBase className={className}>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 1 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 .9-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5.9h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>
+        </IconBase>
+    )
+}
+
+function ReportsIcon({className}: IconProps) {
+    return (
+        <IconBase className={className}>
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+            <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+            <path d="M8 13h8"/>
+            <path d="M8 17h8"/>
+            <path d="M8 9h2"/>
+        </IconBase>
+    )
+}
+
+function SettingsIcon({className}: IconProps) {
+    return (
+        <IconBase className={className}>
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </IconBase>
+    )
+}
+
+const menuItems: MenuItem[] = [
+    {id: 'dashboard', label: '대시보드', description: '고용률 요약', Icon: DashboardIcon},
+    {id: 'analytics', label: '분석', description: '증감률 비교', Icon: AnalyticsIcon},
+    {id: 'configuration', label: 'Configuration', description: '조회 기준 설정', Icon: ConfigurationIcon},
+    {id: 'reports', label: '리포트', description: '통계 표 생성', Icon: ReportsIcon},
+    {id: 'settings', label: '환경 설정', description: '기본 조건 관리', Icon: SettingsIcon},
 ]
 
-function Sidebar({page, setPage} : SidebarProps) {
+function Sidebar({page, setPage}: SidebarProps) {
+    const [expanded, setExpanded] = useState(false)
+
+    const handleMenuClick = (pageId: string) => {
+        if (!expanded) {
+            setExpanded(true)
+        }
+
+        setPage(pageId)
+    }
+
     return (
-        <aside className="sidebar">
-            <div className="sidebar-logo">자격</div>
+        <aside className={expanded ? 'sidebar expanded' : 'sidebar'} aria-label="주요 메뉴">
+            <button className="sidebar-brand" type="button" onClick={() => setExpanded((value) => !value)}>
+                <span className="sidebar-logo">고</span>
+                <span className="sidebar-brand-text">
+                    <strong>고용 통계</strong>
+                    <small>관리자 대시보드</small>
+                </span>
+            </button>
 
             <nav className="sidebar-nav">
-                {menuItems.map((item) => (
-                    <button
-                        key={item.id}
-                        className={page === item.id ? 'sidebar-menu active' : 'sidebar-menu'}
-                        onClick={() => setPage(item.id)}
-                    >
-                        {item.label}
-                    </button>
-                ))}
+                {menuItems.map((item) => {
+                    const active = page === item.id
+                    const Icon = item.Icon
+
+                    return (
+                        <div className="sidebar-menu-wrap" key={item.id}>
+                            <button
+                                className={active ? 'sidebar-menu active' : 'sidebar-menu'}
+                                type="button"
+                                onClick={() => handleMenuClick(item.id)}
+                                aria-label={item.label}
+                                aria-current={active ? 'page' : undefined}
+                            >
+                                <Icon className="sidebar-menu-icon"/>
+                                <span className="sidebar-menu-text">
+                                    <strong>{item.label}</strong>
+                                    {active && <small>{item.description}</small>}
+                                </span>
+                                {active && <span className="sidebar-active-dot"/>}
+                            </button>
+
+                            {!expanded && (
+                                <span className="sidebar-tooltip">
+                                    <strong>{item.label}</strong>
+                                    <small>{item.description}</small>
+                                </span>
+                            )}
+                        </div>
+                    )
+                })}
             </nav>
         </aside>
     )
-
 }
 
 export default Sidebar
