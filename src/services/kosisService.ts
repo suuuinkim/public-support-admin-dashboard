@@ -4,39 +4,8 @@ import type {
     RegionEmploymentRank,
 } from '../types/kosis'
 
-const KOSIS_API_KEY = import.meta.env.VITE_KOSIS_API_KEY
-const KOSIS_ORG_ID = import.meta.env.VITE_KOSIS_ORG_ID
-const KOSIS_EMPLOYMENT_TBL_ID = import.meta.env.VITE_KOSIS_EMPLOYMENT_TBL_ID
-const KOSIS_EMPLOYMENT_ITEM_ID = import.meta.env.VITE_KOSIS_EMPLOYMENT_ITEM_ID
-
-const createEmploymentApiUrl = () => {
-    const params = new URLSearchParams({
-        method: 'getList',
-        apiKey: KOSIS_API_KEY,
-        itmId: `${KOSIS_EMPLOYMENT_ITEM_ID} `,
-        objL1: 'ALL',
-        objL2: 'ALL',
-        objL3: '',
-        objL4: '',
-        objL5: '',
-        objL6: '',
-        objL7: '',
-        objL8: '',
-        format: 'json',
-        jsonVD: 'Y',
-        prdSe: 'Y',
-        newEstPrdCnt: '3',
-        outputFields:
-            'ORG_ID TBL_ID TBL_NM OBJ_ID OBJ_NM OBJ_NM_ENG NM NM_ENG ITM_ID ITM_NM ITM_NM_ENG UNIT_NM UNIT_NM_ENG PRD_SE PRD_DE LST_CHN_DE',
-        orgId: KOSIS_ORG_ID,
-        tblId: KOSIS_EMPLOYMENT_TBL_ID,
-    })
-
-    return `https://kosis.kr/openapi/Param/statisticsParameterData.do?${params.toString()}`
-}
-
 export async function fetchEmploymentRows(): Promise<KosisEmploymentRow[]> {
-    const response = await fetch(createEmploymentApiUrl())
+    const response = await fetch('/api/kosis-employment')
 
     if (!response.ok) {
         throw new Error('KOSIS 고용률 데이터를 불러오지 못했습니다.')
