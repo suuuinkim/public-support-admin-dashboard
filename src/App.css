@@ -753,6 +753,89 @@
     margin-top: 2px;
 }
 
+.settings-page {
+    padding: 24px;
+}
+
+.settings-card {
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.settings-card:last-child {
+    margin-bottom: 0;
+}
+
+.profile-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #2c5f4e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.profile-summary strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.profile-summary p {
+    margin-bottom: 8px;
+    color: var(--muted-foreground);
+}
+
+.settings-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--secondary);
+}
+
+.notification-item strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.notification-item p {
+    color: var(--muted-foreground);
+}
+
+.notification-item input {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: var(--primary);
+}
+
 @media (max-width: 1100px) {
     .qualification-group-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -765,15 +848,21 @@
     .configuration-summary-box {
         grid-column: 1 / -1;
     }
+
+    .settings-form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 760px) {
-    .configuration-page {
+    .configuration-page,
+    .settings-page {
         padding: 16px;
     }
 
     .qualification-group-list,
-    .configuration-form-grid {
+    .configuration-form-grid,
+    .settings-form-grid {
         grid-template-columns: 1fr;
     }
 
@@ -783,5 +872,10 @@
 
     .configuration-card {
         overflow-x: auto;
+    }
+
+    .profile-summary,
+    .notification-item {
+        align-items: flex-start;
     }
 }

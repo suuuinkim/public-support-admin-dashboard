@@ -4,6 +4,7 @@ import Dashboard from '../../pages/Dashboard'
 import Analytics from '../../pages/Analytics'
 import Reports from '../../pages/Reports'
 import Configuration from '../../pages/Configuration'
+import Settings from '../../pages/Settings'
 
 function Layout() {
     const [page, setPage] = useState('dashboard')
@@ -17,11 +18,7 @@ function Layout() {
                 {page === 'analytics' && <Analytics/>}
                 {page === 'configuration' && <Configuration/>}
                 {page === 'reports' && <Reports/>}
-                {page === 'settings' && (
-                    <div className="page-placeholder">
-                        환경 설정 - 사용자 프로필, 기본 조회 지역, 기본 조회 기간
-                    </div>
-                )}
+                {page === 'settings' && <Settings/>}
             </main>
         </div>
     )
