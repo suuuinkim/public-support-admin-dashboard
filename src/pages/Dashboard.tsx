@@ -10,7 +10,7 @@ import {
     createRegionTopFive,
     fetchEmploymentRows,
 } from '../services/kosisService'
-import type {EmploymentSummary, RegionEmploymentRank} from '../types/kosis'
+import type {EmploymentSummary, KosisDataSource, RegionEmploymentRank} from '../types/kosis'
 
 const dataModeLabels: Record<string, string> = {
     'real-time': '최근 연도',
@@ -19,10 +19,10 @@ const dataModeLabels: Record<string, string> = {
 }
 
 const periodLabels: Record<string, string> = {
-    today: '2024',
-    yesterday: '2023',
-    'last-7-days': '2021-2024',
-    'last-30-days': '2020-2024',
+    today: '2025',
+    yesterday: '2024',
+    'last-7-days': '2023-2025',
+    'last-30-days': '2021-2025',
 }
 
 function getKosisRegionName(regionName?: string) {
@@ -55,24 +55,31 @@ function Dashboard() {
     const [regionTopFive, setRegionTopFive] = useState<RegionEmploymentRank[]>([])
     const [isEmploymentLoading, setIsEmploymentLoading] = useState(false)
     const [employmentErrorMessage, setEmploymentErrorMessage] = useState('')
+    const [dataSource, setDataSource] = useState<KosisDataSource | null>(null)
+    const [fallbackReason, setFallbackReason] = useState('')
 
     const dataModeLabel = dataModeLabels[dataMode] ?? dataMode
     const dayLabel = periodLabels[day] ?? day
+    const dataSourceLabel = dataSource === 'kosis' ? 'KOSIS 실시간 데이터' : 'Fallback 임시 데이터'
 
     useEffect(() => {
         const selectedRegionName = getKosisRegionName(selectedTarget?.label)
 
         setIsEmploymentLoading(true)
         setEmploymentErrorMessage('')
+        setFallbackReason('')
 
         fetchEmploymentRows()
-            .then((rows) => {
-                setEmploymentSummary(createEmploymentSummary(rows, selectedRegionName))
-                setRegionTopFive(createRegionTopFive(rows))
+            .then((data) => {
+                setEmploymentSummary(createEmploymentSummary(data.rows, selectedRegionName))
+                setRegionTopFive(createRegionTopFive(data.rows))
+                setDataSource(data.source)
+                setFallbackReason(data.reason ?? '')
             })
             .catch(() => {
                 setEmploymentSummary(null)
                 setRegionTopFive([])
+                setDataSource(null)
                 setEmploymentErrorMessage('KOSIS 고용률 데이터를 불러오지 못했습니다.')
             })
             .finally(() => {
@@ -107,8 +114,8 @@ function Dashboard() {
         <section className="dashboard-page">
             <header className="dashboard-header">
                 <div>
-                    <h1>지역 고용 통계 대시보드</h1>
-                    <p>지역, 성별, 연도별 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
+                    <h1>지역 고용 통계 관리자 대시보드</h1>
+                    <p>지역, 연도별 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
                 </div>
 
                 <div className="status-badge">
@@ -132,7 +139,18 @@ function Dashboard() {
                 <span>현재 조회 범위</span>
                 <strong>{selectedTarget?.label}</strong>
                 <span>{dataModeLabel} / {dayLabel}</span>
+                {dataSource && (
+                    <span className={dataSource === 'kosis' ? 'data-source-badge' : 'data-source-badge fallback'}>
+                        데이터 출처: {dataSourceLabel}
+                    </span>
+                )}
             </div>
+
+            {fallbackReason && (
+                <div className="info-message">
+                    KOSIS 연결이 불안정하여 임시 데이터를 표시합니다.
+                </div>
+            )}
 
             {employmentErrorMessage && (
                 <div className="error-message">
@@ -181,7 +199,7 @@ function Dashboard() {
             </Card>
 
             <div className="chart-grid">
-                <QualificationCategoryChart targetName={selectedTarget?.label ?? '알 수 없음'} period={dayLabel}/>
+                <QualificationCategoryChart targetName={selectedTarget?.label ?? '선택 없음'} period={dayLabel}/>
                 <YearlyTrendChart dataScope={dataModeLabel}/>
             </div>
         </section>

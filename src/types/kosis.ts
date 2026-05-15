@@ -30,3 +30,11 @@ export type RegionEmploymentRank = {
     regionName: string
     rate: number
 }
+
+export type KosisDataSource = 'kosis' | 'fallback'
+
+export type KosisEmploymentResponse = {
+    source: KosisDataSource
+    reason?: string
+    rows: KosisEmploymentRow[]
+}

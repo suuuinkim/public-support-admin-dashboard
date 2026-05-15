@@ -2,13 +2,13 @@ import {useState} from 'react'
 import Card from '../components/common/Card'
 
 const regionOptions = ['전체 지역', '서울', '경기', '부산', '대구', '인천']
-const periodOptions = ['2024', '2021-2024', '2020-2024']
-const reportTypeOptions = ['자격 취득 현황 요약', '지역별 취득자 분석', '연도별 자격 취득 추이']
+const periodOptions = ['2025', '2023-2025', '2021-2025']
+const reportTypeOptions = ['지역별 고용률 요약', '성별 고용률 비교', '연도별 고용률 변화']
 
 function Settings() {
     const [defaultRegion, setDefaultRegion] = useState('전체 지역')
-    const [defaultPeriod, setDefaultPeriod] = useState('2024')
-    const [defaultReportType, setDefaultReportType] = useState('자격 취득 현황 요약')
+    const [defaultPeriod, setDefaultPeriod] = useState('2025')
+    const [defaultReportType, setDefaultReportType] = useState('지역별 고용률 요약')
 
     return (
         <section className="settings-page">
@@ -30,8 +30,8 @@ function Settings() {
 
                     <div>
                         <strong>관리자</strong>
-                        <p>admin@qualification-dashboard.kr</p>
-                        <span className="badge badge-default">통계 관리자</span>
+                        <p>admin@employment-dashboard.kr</p>
+                        <span className="badge badge-default">고용 통계 관리자</span>
                     </div>
                 </div>
             </Card>
@@ -45,10 +45,7 @@ function Settings() {
                 <div className="settings-form-grid">
                     <label className="filter-field">
                         <span>기본 지역</span>
-                        <select
-                            value={defaultRegion}
-                            onChange={(event) => setDefaultRegion(event.target.value)}
-                        >
+                        <select value={defaultRegion} onChange={(event) => setDefaultRegion(event.target.value)}>
                             {regionOptions.map((region) => (
                                 <option key={region} value={region}>
                                     {region}
@@ -59,10 +56,7 @@ function Settings() {
 
                     <label className="filter-field">
                         <span>기본 기간</span>
-                        <select
-                            value={defaultPeriod}
-                            onChange={(event) => setDefaultPeriod(event.target.value)}
-                        >
+                        <select value={defaultPeriod} onChange={(event) => setDefaultPeriod(event.target.value)}>
                             {periodOptions.map((period) => (
                                 <option key={period} value={period}>
                                     {period}
@@ -96,8 +90,8 @@ function Settings() {
                 <div className="notification-list">
                     <label className="notification-item">
                         <div>
-                            <strong>리포트 생성 완료</strong>
-                            <p>리포트 파일이 준비되면 알림을 표시합니다.</p>
+                            <strong>고용 통계 동기화 완료</strong>
+                            <p>KOSIS 고용률 데이터가 갱신되면 알림을 표시합니다.</p>
                         </div>
                         <input type="checkbox" defaultChecked/>
                     </label>
@@ -113,7 +107,7 @@ function Settings() {
                     <label className="notification-item">
                         <div>
                             <strong>월간 요약 알림</strong>
-                            <p>월별 자격 취득 통계 요약을 알림으로 받습니다.</p>
+                            <p>월별 고용 통계 요약을 알림으로 받습니다.</p>
                         </div>
                         <input type="checkbox"/>
                     </label>

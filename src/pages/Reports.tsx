@@ -20,34 +20,34 @@ type SelectOption = {
 type ReportTemplate = SelectOption & {
     description: string
     metrics: {
-        totalAcquirers: string
+        latestRate: string
         topRegion: string
-        growthRate: string
+        changeRate: string
     }
 }
 
 const initialReportHistory: ReportHistoryItem[] = [
     {
         id: 'RPT-2026-001',
-        name: '자격 취득 현황 요약',
+        name: '지역별 고용률 요약',
         target: '서울',
-        period: '2024',
+        period: '2025',
         status: 'Ready',
         createdAt: '2026-05-14 09:30',
     },
     {
         id: 'RPT-2026-002',
-        name: '지역별 취득자 분석',
+        name: '성별 고용률 비교',
         target: '수도권',
-        period: '2021-2024',
+        period: '2023-2025',
         status: 'Ready',
         createdAt: '2026-05-13 18:10',
     },
     {
         id: 'RPT-2026-003',
-        name: '연도별 자격 취득 추이',
+        name: '연도별 고용률 변화',
         target: '전체 지역',
-        period: '2020-2024',
+        period: '2021-2025',
         status: 'Processing',
         createdAt: '2026-05-13 16:45',
     },
@@ -55,49 +55,49 @@ const initialReportHistory: ReportHistoryItem[] = [
 
 const reportTemplates: ReportTemplate[] = [
     {
-        value: 'qualification-summary',
-        label: '자격 취득 현황 요약',
-        description: '취득자 수, 인기 자격군, 지역별 분포를 요약합니다.',
+        value: 'regional-employment-summary',
+        label: '지역별 고용률 요약',
+        description: '선택한 기간의 지역별 고용률을 표 형태로 정리합니다.',
         metrics: {
-            totalAcquirers: '18,420명',
-            topRegion: '서울',
-            growthRate: '+12.8%',
+            latestRate: '62.9%',
+            topRegion: '제주도',
+            changeRate: '+0.2%p',
         },
     },
     {
-        value: 'regional-analysis',
-        label: '지역별 취득자 분석',
-        description: '시도별 자격 취득 규모와 주요 자격군을 비교합니다.',
+        value: 'gender-employment-comparison',
+        label: '성별 고용률 비교',
+        description: '남자, 여자, 전체 고용률을 지역별로 비교합니다.',
         metrics: {
-            totalAcquirers: '41,320명',
-            topRegion: '수도권',
-            growthRate: '+9.6%',
+            latestRate: '남자 70.6%',
+            topRegion: '세종특별자치시',
+            changeRate: '15.3%p',
         },
     },
     {
-        value: 'yearly-trend',
-        label: '연도별 자격 취득 추이',
-        description: '선택한 자격군과 지역의 연도별 취득자 변화를 분석합니다.',
+        value: 'yearly-employment-trend',
+        label: '연도별 고용률 변화',
+        description: '연도별 고용률 흐름과 전년 대비 증감률을 확인합니다.',
         metrics: {
-            totalAcquirers: '68,900명',
-            topRegion: '경기',
-            growthRate: '+15.4%',
+            latestRate: '2025년 62.9%',
+            topRegion: '충청북도',
+            changeRate: '+1.3%p',
         },
     },
 ]
 
 const periodOptions: SelectOption[] = [
     {
-        value: '2024',
-        label: '2024',
+        value: '2025',
+        label: '2025',
     },
     {
-        value: '2021-2024',
-        label: '2021-2024',
+        value: '2023-2025',
+        label: '2023-2025',
     },
     {
-        value: '2020-2024',
-        label: '2020-2024',
+        value: '2021-2025',
+        label: '2021-2025',
     },
 ]
 
@@ -121,8 +121,8 @@ const targetOptions: SelectOption[] = [
 ]
 
 function Reports() {
-    const [reportType, setReportType] = useState('qualification-summary')
-    const [period, setPeriod] = useState('2024')
+    const [reportType, setReportType] = useState('regional-employment-summary')
+    const [period, setPeriod] = useState('2025')
     const [target, setTarget] = useState('all-regions')
     const [reportHistory, setReportHistory] = useState(initialReportHistory)
 
@@ -140,16 +140,16 @@ function Reports() {
 
     const previewMetrics = [
         {
-            label: '총 취득자 수',
-            value: selectedTemplate.metrics.totalAcquirers,
+            label: '최신 고용률',
+            value: selectedTemplate.metrics.latestRate,
         },
         {
             label: '상위 지역',
             value: selectedTemplate.metrics.topRegion,
         },
         {
-            label: '증가율',
-            value: selectedTemplate.metrics.growthRate,
+            label: '증감/격차',
+            value: selectedTemplate.metrics.changeRate,
         },
     ]
 
@@ -158,14 +158,14 @@ function Reports() {
     }
 
     const handleGenerateReport = () => {
-        const createdAt = new Intl.DateTimeFormat('en-CA', {
+        const createdAt = new Intl.DateTimeFormat('ko-KR', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
             hour12: false,
-        }).format(new Date()).replace(',', '')
+        }).format(new Date()).replace(/\./g, '-').replace(',', '').trim()
 
         const nextReport: ReportHistoryItem = {
             id: `RPT-2026-${String(reportHistory.length + 1).padStart(3, '0')}`,
@@ -198,7 +198,7 @@ function Reports() {
             <header className="page-header">
                 <div>
                     <h1>리포트</h1>
-                    <p>자격군, 지역, 분석 기간별 취득자 리포트를 생성하고 관리합니다.</p>
+                    <p>연도별, 지역별 고용 통계 표를 생성하고 관리합니다.</p>
                 </div>
             </header>
 
@@ -207,7 +207,7 @@ function Reports() {
                     <div className="report-history-header">
                         <div className="chart-header">
                             <h2>리포트 생성</h2>
-                            <p>리포트 유형, 지역, 분석 기간을 선택하세요.</p>
+                            <p>리포트 유형, 지역, 조회 기간을 선택하세요.</p>
                         </div>
 
                         <button
@@ -295,7 +295,7 @@ function Reports() {
             <Card className="report-history-card">
                 <div className="chart-header">
                     <h2>리포트 이력</h2>
-                    <p>최근 생성된 자격 통계 리포트입니다.</p>
+                    <p>최근 생성한 고용 통계 리포트입니다.</p>
                 </div>
 
                 <table>

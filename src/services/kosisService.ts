@@ -1,10 +1,11 @@
 import type {
     EmploymentSummary,
+    KosisEmploymentResponse,
     KosisEmploymentRow,
     RegionEmploymentRank,
 } from '../types/kosis'
 
-export async function fetchEmploymentRows(): Promise<KosisEmploymentRow[]> {
+export async function fetchEmploymentRows(): Promise<KosisEmploymentResponse> {
     const response = await fetch('/api/kosis-employment')
 
     if (!response.ok) {

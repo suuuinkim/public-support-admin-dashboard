@@ -1,101 +1,101 @@
 export const dashboardSummaryByTarget = {
-  'device-1': {
-    certifiedPeople: '18,420명',
-    qualificationItems: '1,248개 종목',
-    growthRate: '64.8%',
-  },
-  'device-2': {
-    certifiedPeople: '12,760명',
-    qualificationItems: '938개 종목',
-    growthRate: '58.3%',
-  },
-  'device-3': {
-    certifiedPeople: '9,840명',
-    qualificationItems: '812개 종목',
-    growthRate: '52.1%',
-  },
-  'group-production': {
-    certifiedPeople: '41,320명',
-    qualificationItems: '2,486개 종목',
-    growthRate: '67.4%',
-  },
-  'group-admin': {
-    certifiedPeople: '27,580명',
-    qualificationItems: '1,724개 종목',
-    growthRate: '61.2%',
-  },
+    'device-1': {
+        certifiedPeople: '61.5%',
+        qualificationItems: '서울특별시',
+        growthRate: '-0.2%p',
+    },
+    'device-2': {
+        certifiedPeople: '63.8%',
+        qualificationItems: '경기도',
+        growthRate: '-0.3%p',
+    },
+    'device-3': {
+        certifiedPeople: '58.4%',
+        qualificationItems: '부산광역시',
+        growthRate: '+0.6%p',
+    },
+    'group-production': {
+        certifiedPeople: '62.8%',
+        qualificationItems: '수도권',
+        growthRate: '-0.1%p',
+    },
+    'group-admin': {
+        certifiedPeople: '64.5%',
+        qualificationItems: '남부권',
+        growthRate: '+0.4%p',
+    },
 }
 
 export type DashboardTargetId = keyof typeof dashboardSummaryByTarget
 
 export const filterTargets = [
-  { value: 'device-1', label: '서울' },
-  { value: 'device-2', label: '경기' },
-  { value: 'device-3', label: '부산' },
-  { value: 'group-production', label: '수도권' },
-  { value: 'group-admin', label: '남부권' },
+    {value: 'device-1', label: '서울'},
+    {value: 'device-2', label: '경기'},
+    {value: 'device-3', label: '부산'},
+    {value: 'group-production', label: '수도권'},
+    {value: 'group-admin', label: '남부권'},
 ] as const
 
 export const filterDevices = [
-  { value: 'device-1', label: '서울' },
-  { value: 'device-2', label: '경기' },
-  { value: 'device-3', label: '부산' },
+    {value: 'device-1', label: '서울'},
+    {value: 'device-2', label: '경기'},
+    {value: 'device-3', label: '부산'},
 ] as const
 
 export const filterGroups = [
-  { value: 'group-production', label: '수도권' },
-  { value: 'group-admin', label: '남부권' },
+    {value: 'group-production', label: '수도권'},
+    {value: 'group-admin', label: '남부권'},
 ] as const
 
 export const qualificationSummaryCards = [
-  {
-    name: '종목',
-    fullName: '등록 자격 종목',
-    value: '1,248',
-    unit: '개',
-    change: '+5.2%',
-    trend: 'up',
-    status: '활성',
-  },
-  {
-    name: '취득',
-    fullName: '자격 취득자',
-    value: '18,420',
-    unit: '명',
-    change: '+12.8%',
-    trend: 'up',
-    status: '증가',
-  },
-  {
-    name: '지역',
-    fullName: '분석 지역',
-    value: '17',
-    unit: '개 시도',
-    change: '0.0%',
-    trend: 'stable',
-    status: '유지',
-  },
-  {
-    name: '증가',
-    fullName: '전년 대비 증가율',
-    value: '64.8',
-    unit: '%',
-    change: '+3.6%',
-    trend: 'up',
-    status: '상승',
-  },
+    {
+        name: '지표',
+        fullName: 'KOSIS 고용률 지표',
+        value: '1',
+        unit: '개',
+        change: 'API',
+        trend: 'stable',
+        status: '연동',
+    },
+    {
+        name: '지역',
+        fullName: '분석 대상 시도',
+        value: '17',
+        unit: '개 시도',
+        change: '전국',
+        trend: 'stable',
+        status: '유지',
+    },
+    {
+        name: '기준',
+        fullName: '최신 조회 연도',
+        value: '2025',
+        unit: '년',
+        change: '+1년',
+        trend: 'up',
+        status: '최신',
+    },
+    {
+        name: '출처',
+        fullName: '공공데이터 통계',
+        value: 'KOSIS',
+        unit: '',
+        change: 'API',
+        trend: 'stable',
+        status: '정상',
+    },
 ] as const
 
 export const qualificationCategoryData = [
-  { label: '정보처리', value: 36 },
-  { label: '산업안전', value: 24 },
-  { label: '조리기능', value: 21 },
-  { label: '전기기술', value: 19 },
+    {label: '전체', value: 63},
+    {label: '남자', value: 71},
+    {label: '여자', value: 55},
+    {label: '선택 지역', value: 62},
 ] as const
 
 export const yearlyTrendData = [
-  { year: '2021', actual: 12400, baseline: 11200 },
-  { year: '2022', actual: 13800, baseline: 12500 },
-  { year: '2023', actual: 15600, baseline: 14200 },
-  { year: '2024', actual: 18420, baseline: 16500 },
+    {year: '2022', actual: 61.9, baseline: 61.3},
+    {year: '2023', actual: 62.6, baseline: 61.9},
+    {year: '2024', actual: 62.7, baseline: 62.1},
+    {year: '2025', actual: 62.9, baseline: 62.4},
 ] as const
