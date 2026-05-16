@@ -4,6 +4,7 @@ import {
     Chart,
     Filler,
     Legend,
+    LineController,
     LineElement,
     LinearScale,
     PointElement,
@@ -12,7 +13,7 @@ import {
 import {monthlyTrendData} from '../../data/dashboardData'
 import Card from '../common/Card'
 
-Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip, Legend)
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip, Legend)
 
 type MonthlyTrendChartProps = {
     dataScope: string
