@@ -46,6 +46,17 @@ function DashboardIcon({className}: IconProps) {
     )
 }
 
+function BrandLogoIcon({className}: IconProps) {
+    return (
+        <IconBase className={className}>
+            <path d="M4 19V5"/>
+            <path d="M4 19H20"/>
+            <path d="M7 15L11 11L14 13L19 7"/>
+            <path d="M18 7H19V8"/>
+        </IconBase>
+    )
+}
+
 function AnalyticsIcon({className}: IconProps) {
     return (
         <IconBase className={className}>
@@ -109,7 +120,9 @@ function Sidebar({page, setPage}: SidebarProps) {
     return (
         <aside className={expanded ? 'sidebar expanded' : 'sidebar'} aria-label="주요 메뉴">
             <button className="sidebar-brand" type="button" onClick={() => setExpanded((value) => !value)}>
-                <span className="sidebar-logo">고</span>
+                <span className="sidebar-logo" aria-hidden="true">
+                    <BrandLogoIcon className="sidebar-logo-icon"/>
+                </span>
                 <span className="sidebar-brand-text">
                     <strong>고용 통계</strong>
                     <small>관리자 대시보드</small>

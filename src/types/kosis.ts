@@ -40,3 +40,8 @@ export type KosisEmploymentResponse = {
     reason?: string
     rows: KosisEmploymentRow[]
 }
+
+export type GenderEmploymentRate = {
+    label: string
+    value: number
+}

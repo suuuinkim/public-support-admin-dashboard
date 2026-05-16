@@ -9,9 +9,15 @@ import {regionOptions} from '../data/dashboardData'
 import {
     createEmploymentSummary,
     createRegionTopFive,
+    createGenderEmploymentRates,
     fetchEmploymentRows,
 } from '../services/kosisService'
-import type {EmploymentSummary, KosisDataSource, RegionEmploymentRank} from '../types/kosis'
+import type {
+    EmploymentSummary,
+    GenderEmploymentRate,
+    KosisDataSource,
+    RegionEmploymentRank
+} from '../types/kosis'
 
 const rangeLabels: Record<string, string> = {
     'single-month': '해당 월',
@@ -54,7 +60,7 @@ function Dashboard() {
     const [employmentErrorMessage, setEmploymentErrorMessage] = useState('')
     const [dataSource, setDataSource] = useState<KosisDataSource | null>(null)
     const [fallbackReason, setFallbackReason] = useState('')
-
+    const [genderEmploymentRates, setGenderEmploymentRates] = useState<GenderEmploymentRate[]>([])
     const rangeLabel = rangeLabels[range] ?? range
     const dataSourceLabel = dataSource === 'kosis' ? 'KOSIS 실시간 데이터' : 'Fallback 임시 데이터'
     const latestPeriodLabel = formatPeriod(employmentSummary?.latestPeriod)
@@ -71,12 +77,14 @@ function Dashboard() {
                 const basePeriod = toPeriodCode(baseMonth)
 
                 setEmploymentSummary(createEmploymentSummary(data.rows, selectedRegionName, basePeriod))
+                setGenderEmploymentRates(createGenderEmploymentRates(data.rows, selectedRegionName, basePeriod))
                 setRegionTopFive(createRegionTopFive(data.rows, basePeriod))
                 setDataSource(data.source)
                 setFallbackReason(data.reason ?? '')
             })
             .catch(() => {
                 setEmploymentSummary(null)
+                setGenderEmploymentRates([])
                 setRegionTopFive([])
                 setDataSource(null)
                 setEmploymentErrorMessage('KOSIS 고용률 데이터를 불러오지 못했습니다.')
@@ -199,7 +207,13 @@ function Dashboard() {
             </Card>
 
             <div className="chart-grid">
-                <QualificationCategoryChart targetName={selectedRegion?.label ?? '선택 없음'} period={`${baseMonth} / ${rangeLabel}`}/>
+                <QualificationCategoryChart
+                    targetName={selectedRegion?.label ?? '선택 없음'}
+                    period={`${baseMonth} / ${rangeLabel}`}
+                    data={genderEmploymentRates}
+                />
+
+
                 <YearlyTrendChart dataScope={`${baseMonth} 기준 ${rangeLabel}`}/>
             </div>
         </section>

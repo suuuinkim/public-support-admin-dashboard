@@ -1,12 +1,13 @@
-import {qualificationCategoryData} from '../../data/dashboardData'
 import Card from '../common/Card'
+import type {GenderEmploymentRate} from "../../types/kosis"
 
 type QualificationCategoryChartProps = {
     targetName: string
     period: string
+    data: GenderEmploymentRate[]
 }
 
-function QualificationCategoryChart({targetName, period}: QualificationCategoryChartProps) {
+function QualificationCategoryChart({targetName, period, data}: QualificationCategoryChartProps) {
     return (
         <Card className="chart-card">
             <div className="chart-header">
@@ -19,7 +20,7 @@ function QualificationCategoryChart({targetName, period}: QualificationCategoryC
             </div>
 
             <div className="bar-list">
-                {qualificationCategoryData.map((item) => (
+                {data.map((item) => (
                     <div key={item.label} className="bar-row">
                         <div className="bar-row-label">
                             <span>{item.label}</span>

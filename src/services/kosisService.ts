@@ -3,6 +3,7 @@ import type {
     KosisEmploymentResponse,
     KosisEmploymentRow,
     RegionEmploymentRank,
+    GenderEmploymentRate,
 } from '../types/kosis'
 
 export async function fetchEmploymentRows(): Promise<KosisEmploymentResponse> {
@@ -126,4 +127,39 @@ export function createRegionTopFive(rows: KosisEmploymentRow[], basePeriod?: str
         }))
         .sort((a, b) => b.rate - a.rate)
         .slice(0, 5)
+}
+
+export function createGenderEmploymentRates(
+    rows: KosisEmploymentRow[],
+    selectedRegionName: string,
+    basePeriod?: string,
+): GenderEmploymentRate[] {
+    const latestPeriod = getLatestPeriod(rows, basePeriod)
+
+    const total = rows.find(
+        (row) =>
+            row.PRD_DE === latestPeriod &&
+            row.C1_NM.includes(selectedRegionName) &&
+            (row.C2 === '0' || row.C2_NM === '계' || row.C2_NM_ENG === 'Total'),
+    )
+
+    const male = rows.find(
+        (row) =>
+            row.PRD_DE === latestPeriod &&
+            row.C1_NM.includes(selectedRegionName) &&
+            (row.C2 === '2' || row.C2_NM === '남자' || row.C2_NM_ENG === 'Male')
+    )
+
+    const female = rows.find(
+        (row) =>
+            row.PRD_DE === latestPeriod &&
+            row.C1_NM.includes(selectedRegionName) &&
+            (row.C2 === '3' || row.C2_NM === '여자' || row.C2_NM_ENG === 'Female')
+    )
+
+    return [
+        {label: '전체', value: total ? Number(total.DT) : 0},
+        {label: '남자', value: male ? Number(male.DT) : 0},
+        {label: '여자', value: female ? Number(female.DT) : 0},
+    ].filter((item) => item.value > 0)
 }
