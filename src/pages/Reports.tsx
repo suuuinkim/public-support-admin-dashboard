@@ -190,7 +190,13 @@ function Reports() {
     }
 
     const handleDownloadReport = (report: ReportHistoryItem) => {
-        window.alert(`${report.name} 다운로드를 시작합니다.`)
+        const params = new URLSearchParams({
+            name: report.name,
+            target: report.target,
+            period: report.period
+        })
+
+        window.location.href = `/api/report-download?${params.toString()}`
     }
 
     return (

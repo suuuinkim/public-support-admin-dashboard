@@ -28,3 +28,10 @@ dist-ssr
 .idea
 .DS_Store
 .vercel
+
+.pptx/
+.pptx
+
+.html
+
+presentation-workspace
