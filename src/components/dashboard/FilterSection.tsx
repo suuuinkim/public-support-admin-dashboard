@@ -1,51 +1,53 @@
 import Card from '../common/Card'
-import {filterDevices, filterGroups} from '../../data/dashboardData'
+import {areaOptions, regionOptions} from '../../data/dashboardData'
+
+type TargetType = 'region' | 'area'
 
 type FilterSectionProps = {
-    filterType: string
-    setFilterType: (value: string) => void
-    device: string
-    setDevice: (value: string) => void
+    targetType: TargetType
+    setTargetType: (value: TargetType) => void
+    selectedTargetId: string
+    setSelectedTargetId: (value: string) => void
     dataMode: string
     setDataMode: (value: string) => void
-    day: string
-    setDay: (value: string) => void
+    period: string
+    setPeriod: (value: string) => void
 }
 
 function FilterSection({
-    filterType,
-    setFilterType,
-    device,
-    setDevice,
+    targetType,
+    setTargetType,
+    selectedTargetId,
+    setSelectedTargetId,
     dataMode,
     setDataMode,
-    day,
-    setDay,
+    period,
+    setPeriod,
 }: FilterSectionProps) {
-    const regionOptions = filterType === 'device' ? filterDevices : filterGroups
+    const selectableTargets = targetType === 'region' ? regionOptions : areaOptions
 
     return (
         <Card className="filter-card">
             <div className="filter-grid">
                 <label className="filter-field">
-                    <span>조회 유형</span>
+                    <span>조회 대상</span>
                     <select
-                        value={filterType}
+                        value={targetType}
                         onChange={(event) => {
-                            const nextFilterType = event.target.value
-                            setFilterType(nextFilterType)
-                            setDevice(nextFilterType === 'device' ? 'device-1' : 'group-production')
+                            const nextTargetType = event.target.value as TargetType
+                            setTargetType(nextTargetType)
+                            setSelectedTargetId(nextTargetType === 'region' ? 'seoul' : 'capital-area')
                         }}
                     >
-                        <option value="device">지역</option>
-                        <option value="virtual-group">권역</option>
+                        <option value="region">시도</option>
+                        <option value="area">권역</option>
                     </select>
                 </label>
 
                 <label className="filter-field">
-                    <span>{filterType === 'device' ? '지역 선택' : '권역 선택'}</span>
-                    <select value={device} onChange={(event) => setDevice(event.target.value)}>
-                        {regionOptions.map((option) => (
+                    <span>{targetType === 'region' ? '시도 선택' : '권역 선택'}</span>
+                    <select value={selectedTargetId} onChange={(event) => setSelectedTargetId(event.target.value)}>
+                        {selectableTargets.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>
@@ -64,11 +66,11 @@ function FilterSection({
 
                 <label className="filter-field">
                     <span>분석 기간</span>
-                    <select value={day} onChange={(event) => setDay(event.target.value)}>
-                        <option value="today">2026.04</option>
-                        <option value="yesterday">2026.03</option>
-                        <option value="last-7-days">최근 12개월</option>
-                        <option value="last-30-days">최근 48개월</option>
+                    <select value={period} onChange={(event) => setPeriod(event.target.value)}>
+                        <option value="latest-month">2026.04</option>
+                        <option value="previous-month">2026.03</option>
+                        <option value="last-12-months">최근 12개월</option>
+                        <option value="last-48-months">최근 48개월</option>
                     </select>
                 </label>
 

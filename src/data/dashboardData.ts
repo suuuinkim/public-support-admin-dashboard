@@ -1,26 +1,26 @@
 export const dashboardSummaryByTarget = {
-    'device-1': {
+    seoul: {
         certifiedPeople: '61.4%',
         qualificationItems: '서울특별시',
         growthRate: '+0.3%p',
     },
-    'device-2': {
+    gyeonggi: {
         certifiedPeople: '63.5%',
         qualificationItems: '경기도',
         growthRate: '+0.2%p',
     },
-    'device-3': {
+    busan: {
         certifiedPeople: '58.2%',
         qualificationItems: '부산광역시',
         growthRate: '-0.1%p',
     },
-    'group-production': {
-        certifiedPeople: '64.4%',
+    'capital-area': {
+        certifiedPeople: '63.4%',
         qualificationItems: '수도권',
         growthRate: '+0.2%p',
     },
-    'group-admin': {
-        certifiedPeople: '66.9%',
+    'chungcheong-area': {
+        certifiedPeople: '67.3%',
         qualificationItems: '충청권',
         growthRate: '+0.4%p',
     },
@@ -28,24 +28,18 @@ export const dashboardSummaryByTarget = {
 
 export type DashboardTargetId = keyof typeof dashboardSummaryByTarget
 
-export const filterTargets = [
-    {value: 'device-1', label: '서울'},
-    {value: 'device-2', label: '경기'},
-    {value: 'device-3', label: '부산'},
-    {value: 'group-production', label: '수도권'},
-    {value: 'group-admin', label: '충청권'},
+export const regionOptions = [
+    {value: 'seoul', label: '서울', kosisName: '서울특별시'},
+    {value: 'gyeonggi', label: '경기', kosisName: '경기도'},
+    {value: 'busan', label: '부산', kosisName: '부산광역시'},
 ] as const
 
-export const filterDevices = [
-    {value: 'device-1', label: '서울'},
-    {value: 'device-2', label: '경기'},
-    {value: 'device-3', label: '부산'},
+export const areaOptions = [
+    {value: 'capital-area', label: '수도권', kosisName: '경기도'},
+    {value: 'chungcheong-area', label: '충청권', kosisName: '충청남도'},
 ] as const
 
-export const filterGroups = [
-    {value: 'group-production', label: '수도권'},
-    {value: 'group-admin', label: '충청권'},
-] as const
+export const targetOptions = [...regionOptions, ...areaOptions] as const
 
 export const qualificationSummaryCards = [
     {
