@@ -50,3 +50,18 @@ export type MonthlyEmploymentTrend = {
     month: string
     rate: number
 }
+
+export type EmploymentChangeRank = {
+    regionCode: string
+    regionName: string
+    currentRate: number
+    previousRate: number
+    change: number
+}
+
+export type GenderMonthlyTrend = {
+    month: string
+    totalRate: number | null
+    maleRate: number | null
+    femaleRate: number | null
+}

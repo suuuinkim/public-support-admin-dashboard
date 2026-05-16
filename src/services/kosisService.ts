@@ -5,6 +5,8 @@ import type {
     RegionEmploymentRank,
     GenderEmploymentRate,
     MonthlyEmploymentTrend,
+    EmploymentChangeRank,
+    GenderMonthlyTrend,
 } from '../types/kosis'
 
 export async function fetchEmploymentRows(): Promise<KosisEmploymentResponse> {
@@ -185,4 +187,70 @@ export function createMonthlyEmploymentTrend(
             month: `${row.PRD_DE.slice(0, 4)}.${row.PRD_DE.slice(4, 6)}`,
             rate: Number(row.DT),
         }))
+}
+
+export function createMonthlyChangeTopFive(
+    rows: KosisEmploymentRow[],
+    basePeriod?: string
+): EmploymentChangeRank[] {
+    const latestPeriod = getLatestPeriod(rows, basePeriod)
+    const previousPeriod = getPreviousPeriod(rows, latestPeriod)
+
+    return rows
+        .filter((row) =>
+            row.PRD_DE === latestPeriod &&
+            isTotalGender(row) &&
+            !isNational(row)
+        )
+        .map((currentRow) => {
+            const previousRow = rows.find((row) =>
+                row.PRD_DE === previousPeriod &&
+                row.C1 === currentRow.C1 &&
+                isTotalGender(row)
+            )
+
+            if (!previousRow) {
+                return null
+            }
+
+            const currentRate = toNumber(currentRow.DT)
+            const previousRate = toNumber(previousRow.DT)
+
+            return {
+                regionCode: currentRow.C1,
+                regionName: currentRow.C1_NM,
+                currentRate,
+                previousRate,
+                change: Number((currentRate - previousRate).toFixed(1)),
+            }
+        })
+        .filter((item): item is EmploymentChangeRank => item !== null)
+        .sort((a,b) => b.change - a.change)
+        .slice(0,5)
+}
+
+export function createGenderMonthlyTrend(
+    rows: KosisEmploymentRow[],
+    basePeriod?: string,
+    monthCount = 12,
+): GenderMonthlyTrend[] {
+    const latestPeriod = getLatestPeriod(rows, basePeriod)
+    const periods = [...new Set(rows.map((row) => row.PRD_DE))]
+        .filter((period) => Number(period) <= Number(latestPeriod))
+        .sort((a, b) => Number(a) - Number(b))
+        .slice(-monthCount)
+
+    return periods.map((period) => {
+        const periodRows = rows.filter((row) => row.PRD_DE === period && row.C1 === '00')
+        const total = periodRows.find(isTotalGender)
+        const male = periodRows.find(isMale)
+        const female = periodRows.find(isFemale)
+
+        return {
+            month: `${period.slice(0, 4)}.${period.slice(4, 6)}`,
+            totalRate: total ? toNumber(total.DT) : null,
+            maleRate: male ? toNumber(male.DT) : null,
+            femaleRate: female ? toNumber(female.DT) : null,
+        }
+    })
 }

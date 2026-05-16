@@ -57,16 +57,16 @@ function BrandLogoIcon({className}: IconProps) {
     )
 }
 
-function AnalyticsIcon({className}: IconProps) {
-    return (
-        <IconBase className={className}>
-            <path d="M3 3v18h18"/>
-            <path d="M18 17V9"/>
-            <path d="M13 17V5"/>
-            <path d="M8 17v-3"/>
-        </IconBase>
-    )
-}
+// function AnalyticsIcon({className}: IconProps) {
+//     return (
+//         <IconBase className={className}>
+//             <path d="M3 3v18h18"/>
+//             <path d="M18 17V9"/>
+//             <path d="M13 17V5"/>
+//             <path d="M8 17v-3"/>
+//         </IconBase>
+//     )
+// }
 
 function ReportsIcon({className}: IconProps) {
     return (
@@ -91,7 +91,7 @@ function SettingsIcon({className}: IconProps) {
 
 const menuItems: MenuItem[] = [
     {id: 'dashboard', label: '대시보드', description: '고용률 요약', Icon: DashboardIcon},
-    {id: 'analytics', label: '분석', description: '증감률 비교', Icon: AnalyticsIcon},
+    // {id: 'analytics', label: '분석', description: '증감률 비교', Icon: AnalyticsIcon},
     {id: 'reports', label: '리포트', description: '통계 표 생성', Icon: ReportsIcon},
     {id: 'settings', label: '환경 설정', description: '기본 조건 관리', Icon: SettingsIcon},
 ]
