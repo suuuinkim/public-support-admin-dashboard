@@ -56,19 +56,19 @@ function FilterSection({
                 <label className="filter-field">
                     <span>데이터 범위</span>
                     <select value={dataMode} onChange={(event) => setDataMode(event.target.value)}>
-                        <option value="real-time">최근 연도</option>
-                        <option value="historical">연도별 추이</option>
-                        <option value="combined">통합 조회</option>
+                        <option value="real-time">최근 월</option>
+                        <option value="historical">월별 추이</option>
+                        <option value="combined">최근 48개월</option>
                     </select>
                 </label>
 
                 <label className="filter-field">
                     <span>분석 기간</span>
                     <select value={day} onChange={(event) => setDay(event.target.value)}>
-                        <option value="today">2025</option>
-                        <option value="yesterday">2024</option>
-                        <option value="last-7-days">2023-2025</option>
-                        <option value="last-30-days">2021-2025</option>
+                        <option value="today">2026.04</option>
+                        <option value="yesterday">2026.03</option>
+                        <option value="last-7-days">최근 12개월</option>
+                        <option value="last-30-days">최근 48개월</option>
                     </select>
                 </label>
 

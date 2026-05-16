@@ -25,6 +25,26 @@ function toNumber(value: string) {
     return Number(value)
 }
 
+function isTotalGender(row: KosisEmploymentRow) {
+    return row.C2 === '0' || row.C2_NM === '계' || row.C2_NM_ENG === 'Total'
+}
+
+function isMale(row: KosisEmploymentRow) {
+    return row.C2 === '2' || row.C2_NM === '남자' || row.C2_NM_ENG === 'Male'
+}
+
+function isFemale(row: KosisEmploymentRow) {
+    return row.C2 === '3' || row.C2_NM === '여자' || row.C2_NM_ENG === 'Female'
+}
+
+function isNational(row: KosisEmploymentRow) {
+    return row.C1 === '00' || row.C1_NM === '계' || row.C1_NM_ENG === 'Total'
+}
+
+function isSelectedRegion(row: KosisEmploymentRow, selectedRegionName: string) {
+    return row.C1_NM.includes(selectedRegionName)
+}
+
 export function createEmploymentSummary(
     rows: KosisEmploymentRow[],
     selectedRegionName: string,
@@ -32,17 +52,14 @@ export function createEmploymentSummary(
     const latestPeriod = getLatestPeriod(rows)
 
     const nationalLatest = rows.find(
-        (row) =>
-            row.PRD_DE === latestPeriod &&
-            row.C1_NM === '계' &&
-            row.C2_NM === '계',
+        (row) => row.PRD_DE === latestPeriod && isNational(row) && isTotalGender(row),
     )
 
     const selectedRegionLatest = rows.find(
         (row) =>
             row.PRD_DE === latestPeriod &&
-            row.C1_NM.includes(selectedRegionName) &&
-            row.C2_NM === '계',
+            isSelectedRegion(row, selectedRegionName) &&
+            isTotalGender(row),
     )
 
     const previousPeriod = rows
@@ -53,33 +70,22 @@ export function createEmploymentSummary(
     const selectedRegionPrevious = rows.find(
         (row) =>
             row.PRD_DE === previousPeriod &&
-            row.C1_NM.includes(selectedRegionName) &&
-            row.C2_NM === '계',
+            isSelectedRegion(row, selectedRegionName) &&
+            isTotalGender(row),
     )
 
     const maleLatest = rows.find(
-        (row) =>
-            row.PRD_DE === latestPeriod &&
-            row.C1_NM.includes(selectedRegionName) &&
-            row.C2_NM === '남자',
+        (row) => row.PRD_DE === latestPeriod && isSelectedRegion(row, selectedRegionName) && isMale(row),
     )
 
     const femaleLatest = rows.find(
-        (row) =>
-            row.PRD_DE === latestPeriod &&
-            row.C1_NM.includes(selectedRegionName) &&
-            row.C2_NM === '여자',
+        (row) => row.PRD_DE === latestPeriod && isSelectedRegion(row, selectedRegionName) && isFemale(row),
     )
 
-    const selectedRegionRate = selectedRegionLatest
-        ? toNumber(selectedRegionLatest.DT)
-        : null
+    const selectedRegionRate = selectedRegionLatest ? toNumber(selectedRegionLatest.DT) : null
+    const previousRate = selectedRegionPrevious ? toNumber(selectedRegionPrevious.DT) : null
 
-    const previousRate = selectedRegionPrevious
-        ? toNumber(selectedRegionPrevious.DT)
-        : null
-
-    const yearlyChange =
+    const monthlyChange =
         selectedRegionRate !== null && previousRate !== null
             ? Number((selectedRegionRate - previousRate).toFixed(1))
             : null
@@ -93,7 +99,7 @@ export function createEmploymentSummary(
         latestPeriod,
         nationalRate: nationalLatest ? toNumber(nationalLatest.DT) : 0,
         selectedRegionRate,
-        yearlyChange,
+        monthlyChange,
         genderGap,
     }
 }
@@ -105,8 +111,8 @@ export function createRegionTopFive(rows: KosisEmploymentRow[]): RegionEmploymen
         .filter(
             (row) =>
                 row.PRD_DE === latestPeriod &&
-                row.C2_NM === '계' &&
-                row.C1_NM !== '계',
+                isTotalGender(row) &&
+                !isNational(row),
         )
         .map((row) => ({
             regionCode: row.C1,

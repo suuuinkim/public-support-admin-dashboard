@@ -31,7 +31,7 @@ const initialReportHistory: ReportHistoryItem[] = [
         id: 'RPT-2026-001',
         name: '지역별 고용률 요약',
         target: '서울',
-        period: '2025',
+        period: '2026.04',
         status: 'Ready',
         createdAt: '2026-05-14 09:30',
     },
@@ -39,15 +39,15 @@ const initialReportHistory: ReportHistoryItem[] = [
         id: 'RPT-2026-002',
         name: '성별 고용률 비교',
         target: '수도권',
-        period: '2023-2025',
+        period: '최근 12개월',
         status: 'Ready',
         createdAt: '2026-05-13 18:10',
     },
     {
         id: 'RPT-2026-003',
-        name: '연도별 고용률 변화',
+        name: '월별 고용률 변화',
         target: '전체 지역',
-        period: '2021-2025',
+        period: '최근 48개월',
         status: 'Processing',
         createdAt: '2026-05-13 16:45',
     },
@@ -59,9 +59,9 @@ const reportTemplates: ReportTemplate[] = [
         label: '지역별 고용률 요약',
         description: '선택한 기간의 지역별 고용률을 표 형태로 정리합니다.',
         metrics: {
-            latestRate: '62.9%',
+            latestRate: '2026.04 63.0%',
             topRegion: '제주도',
-            changeRate: '+0.2%p',
+            changeRate: '+0.5%p',
         },
     },
     {
@@ -69,35 +69,35 @@ const reportTemplates: ReportTemplate[] = [
         label: '성별 고용률 비교',
         description: '남자, 여자, 전체 고용률을 지역별로 비교합니다.',
         metrics: {
-            latestRate: '남자 70.6%',
-            topRegion: '세종특별자치시',
-            changeRate: '15.3%p',
+            latestRate: '남자 70.5%',
+            topRegion: '제주도',
+            changeRate: '14.8%p',
         },
     },
     {
-        value: 'yearly-employment-trend',
-        label: '연도별 고용률 변화',
-        description: '연도별 고용률 흐름과 전년 대비 증감률을 확인합니다.',
+        value: 'monthly-employment-trend',
+        label: '월별 고용률 변화',
+        description: '최근 48개월 고용률 흐름과 전월 대비 증감률을 확인합니다.',
         metrics: {
-            latestRate: '2025년 62.9%',
-            topRegion: '충청북도',
-            changeRate: '+1.3%p',
+            latestRate: '2026.04 63.0%',
+            topRegion: '충청남도',
+            changeRate: '+0.5%p',
         },
     },
 ]
 
 const periodOptions: SelectOption[] = [
     {
-        value: '2025',
-        label: '2025',
+        value: '2026.04',
+        label: '2026.04',
     },
     {
-        value: '2023-2025',
-        label: '2023-2025',
+        value: 'last-12-months',
+        label: '최근 12개월',
     },
     {
-        value: '2021-2025',
-        label: '2021-2025',
+        value: 'last-48-months',
+        label: '최근 48개월',
     },
 ]
 
@@ -122,7 +122,7 @@ const targetOptions: SelectOption[] = [
 
 function Reports() {
     const [reportType, setReportType] = useState('regional-employment-summary')
-    const [period, setPeriod] = useState('2025')
+    const [period, setPeriod] = useState('2026.04')
     const [target, setTarget] = useState('all-regions')
     const [reportHistory, setReportHistory] = useState(initialReportHistory)
 
@@ -198,7 +198,7 @@ function Reports() {
             <header className="page-header">
                 <div>
                     <h1>리포트</h1>
-                    <p>연도별, 지역별 고용 통계 표를 생성하고 관리합니다.</p>
+                    <p>월별, 지역별 고용 통계 표를 생성하고 관리합니다.</p>
                 </div>
             </header>
 
@@ -315,7 +315,7 @@ function Reports() {
                     {reportHistory.length === 0 ? (
                         <tr>
                             <td colSpan={7} className="empty-table-message">
-                                생성된 리포트가 없습니다.
+                                생성한 리포트가 없습니다.
                             </td>
                         </tr>
                     ) : (

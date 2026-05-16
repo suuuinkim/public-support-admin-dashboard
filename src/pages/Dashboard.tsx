@@ -4,6 +4,7 @@ import FilterSection from '../components/dashboard/FilterSection'
 import QualificationCategoryChart from '../components/dashboard/QualificationCategoryChart'
 import QualificationSummaryCards from '../components/dashboard/QualificationSummaryCards'
 import YearlyTrendChart from '../components/dashboard/YearlyTrendChart'
+import RegionEmploymentBarChart from '../components/charts/RegionEmploymentBarChart'
 import {filterTargets} from '../data/dashboardData'
 import {
     createEmploymentSummary,
@@ -13,22 +14,24 @@ import {
 import type {EmploymentSummary, KosisDataSource, RegionEmploymentRank} from '../types/kosis'
 
 const dataModeLabels: Record<string, string> = {
-    'real-time': '최근 연도',
-    historical: '연도별 추이',
-    combined: '통합 조회',
+    'real-time': '최근 월',
+    historical: '월별 추이',
+    combined: '최근 48개월',
 }
 
 const periodLabels: Record<string, string> = {
-    today: '2025',
-    yesterday: '2024',
-    'last-7-days': '2023-2025',
-    'last-30-days': '2021-2025',
+    today: '2026.04',
+    yesterday: '2026.03',
+    'last-7-days': '최근 12개월',
+    'last-30-days': '최근 48개월',
 }
 
 function getKosisRegionName(regionName?: string) {
     if (regionName === '서울') return '서울특별시'
     if (regionName === '경기') return '경기도'
     if (regionName === '부산') return '부산광역시'
+    if (regionName === '수도권') return '경기도'
+    if (regionName === '충청권') return '충청북도'
 
     return regionName ?? '계'
 }
@@ -43,6 +46,14 @@ function formatPoint(value: number | null | undefined) {
     }
 
     return `${value > 0 ? '+' : ''}${value}%p`
+}
+
+function formatPeriod(period?: string) {
+    if (!period || period.length !== 6) {
+        return period ?? '-'
+    }
+
+    return `${period.slice(0, 4)}.${period.slice(4, 6)}`
 }
 
 function Dashboard() {
@@ -61,6 +72,7 @@ function Dashboard() {
     const dataModeLabel = dataModeLabels[dataMode] ?? dataMode
     const dayLabel = periodLabels[day] ?? day
     const dataSourceLabel = dataSource === 'kosis' ? 'KOSIS 실시간 데이터' : 'Fallback 임시 데이터'
+    const latestPeriodLabel = formatPeriod(employmentSummary?.latestPeriod)
 
     useEffect(() => {
         const selectedRegionName = getKosisRegionName(selectedTarget?.label)
@@ -91,7 +103,7 @@ function Dashboard() {
         {
             label: '전국 최신 고용률',
             value: formatRate(employmentSummary?.nationalRate),
-            description: employmentSummary ? `${employmentSummary.latestPeriod}년 기준` : 'KOSIS 고용률',
+            description: employmentSummary ? `${latestPeriodLabel} 기준` : 'KOSIS 고용률',
         },
         {
             label: '선택 지역 고용률',
@@ -99,12 +111,12 @@ function Dashboard() {
             description: selectedTarget?.label ?? '선택 지역',
         },
         {
-            label: '전년 대비 증감',
-            value: formatPoint(employmentSummary?.yearlyChange),
+            label: '전월 대비 증감',
+            value: formatPoint(employmentSummary?.monthlyChange),
             description: '선택 지역 기준',
         },
         {
-            label: '남녀 고용률 차이',
+            label: '성별 고용률 차이',
             value: formatPoint(employmentSummary?.genderGap),
             description: '남자 - 여자',
         },
@@ -115,7 +127,7 @@ function Dashboard() {
             <header className="dashboard-header">
                 <div>
                     <h1>지역 고용 통계 관리자 대시보드</h1>
-                    <p>지역, 연도별 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
+                    <p>지역, 월별 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
                 </div>
 
                 <div className="status-badge">
@@ -148,7 +160,7 @@ function Dashboard() {
 
             {fallbackReason && (
                 <div className="info-message">
-                    KOSIS 연결이 불안정하여 임시 데이터를 표시합니다.
+                    KOSIS 연결이 불안정하여 2026.04 기준 fallback 데이터를 표시합니다.
                 </div>
             )}
 
@@ -173,7 +185,7 @@ function Dashboard() {
             <Card className="employment-ranking-card">
                 <div className="chart-header">
                     <h2>지역별 고용률 Top 5</h2>
-                    <p>KOSIS 최신 연도 기준 지역별 고용률 순위입니다.</p>
+                    <p>KOSIS 최신 월 기준 지역별 고용률 순위입니다.</p>
                 </div>
 
                 {isEmploymentLoading ? (
@@ -181,26 +193,34 @@ function Dashboard() {
                 ) : regionTopFive.length === 0 ? (
                     <div className="empty-table-message">표시할 고용률 순위가 없습니다.</div>
                 ) : (
-                    <div className="employment-ranking-list">
-                        {regionTopFive.map((region, index) => (
-                            <div key={region.regionCode} className="employment-ranking-row">
-                                <span className="employment-ranking-rank">{index + 1}</span>
+                    <>
+                        <RegionEmploymentBarChart
+                            data={regionTopFive.map((region) => ({
+                                regionName: region.regionName,
+                                rate: region.rate,
+                            }))}
+                        />
+                        <div className="employment-ranking-list">
+                            {regionTopFive.map((region, index) => (
+                                <div key={region.regionCode} className="employment-ranking-row">
+                                    <span className="employment-ranking-rank">{index + 1}</span>
 
-                                <div>
-                                    <strong>{region.regionName}</strong>
-                                    <p>지역 코드 {region.regionCode}</p>
+                                    <div>
+                                        <strong>{region.regionName}</strong>
+                                        <p>지역 코드 {region.regionCode}</p>
+                                    </div>
+
+                                    <strong>{region.rate}%</strong>
                                 </div>
-
-                                <strong>{region.rate}%</strong>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </Card>
 
             <div className="chart-grid">
                 <QualificationCategoryChart targetName={selectedTarget?.label ?? '선택 없음'} period={dayLabel}/>
-                <YearlyTrendChart dataScope={dataModeLabel}/>
+                <YearlyTrendChart dataScope={`${dataModeLabel} · 2022.05-2026.04`}/>
             </div>
         </section>
     )

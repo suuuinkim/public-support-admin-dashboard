@@ -1,41 +1,57 @@
 {
-  "hash": "b0b57b66",
+  "hash": "0964dfaf",
   "configHash": "6e801a60",
-  "lockfileHash": "229014ca",
-  "browserHash": "37149dec",
+  "lockfileHash": "3f6a6406",
+  "browserHash": "15b031e8",
   "optimized": {
+    "chart.js": {
+      "src": "../../node_modules/chart.js/dist/chart.js",
+      "file": "chart__js.js",
+      "fileHash": "2f24a4fb",
+      "needsInterop": false
+    },
+    "react-chartjs-2": {
+      "src": "../../node_modules/react-chartjs-2/dist/index.js",
+      "file": "react-chartjs-2.js",
+      "fileHash": "88ccaa6e",
+      "needsInterop": false
+    },
     "react-dom": {
       "src": "../../node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "e4158ab1",
+      "fileHash": "0e353491",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "ba139d4e",
+      "fileHash": "e3972c83",
       "needsInterop": true
     },
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "c77b90dc",
+      "fileHash": "8009381f",
       "needsInterop": true
     },
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "5d646dd6",
+      "fileHash": "8d13c658",
       "needsInterop": true
     },
     "react/jsx-runtime": {
       "src": "../../node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "061dfa46",
+      "fileHash": "19c38077",
       "needsInterop": true
     }
   },
   "chunks": {
+    "chart-bwEmpPHu": {
+      "file": "chart-bwEmpPHu.js",
+      "isDynamicEntry": false
+    },
     "react-DGPCLjpP": {
       "file": "react-DGPCLjpP.js",
       "isDynamicEntry": false

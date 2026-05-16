@@ -7,7 +7,7 @@ const metricOptions = [
     {value: 'employed-count', label: '취업자 수', status: '준비 중'},
 ]
 
-const yearOptions = ['2025', '2024', '2023', '2022', '2021']
+const monthOptions = ['2026.04', '2026.03', '최근 12개월', '최근 48개월']
 
 const regionCodes = [
     {code: '00', name: '전국', memo: '전국 합계'},
@@ -20,7 +20,7 @@ const regionCodes = [
 
 function Configuration() {
     const [defaultMetric, setDefaultMetric] = useState('employment-rate')
-    const [baseYear, setBaseYear] = useState('2025')
+    const [baseMonth, setBaseMonth] = useState('2026.04')
     const [defaultRegionCode, setDefaultRegionCode] = useState('11')
 
     const selectedMetric = metricOptions.find((metric) => metric.value === defaultMetric)
@@ -31,7 +31,7 @@ function Configuration() {
             <header className="page-header">
                 <div>
                     <h1>Configuration</h1>
-                    <p>KOSIS 고용 통계 조회에 사용할 기본 지표, 기준 연도, 지역 코드를 설정합니다.</p>
+                    <p>KOSIS 고용 통계 조회에 사용할 기본 지표, 기준 월, 지역 코드를 설정합니다.</p>
                 </div>
             </header>
 
@@ -57,7 +57,7 @@ function Configuration() {
                         <div className="configuration-summary-box">
                             <span>연동 상태</span>
                             <strong>{selectedMetric?.status}</strong>
-                            <p>현재 KOSIS API는 고용률 지표를 우선 연동합니다.</p>
+                            <p>현재 KOSIS API의 고용률 지표를 우선 연동합니다.</p>
                         </div>
                     </div>
                 </Card>
@@ -65,16 +65,16 @@ function Configuration() {
                 <Card className="configuration-card">
                     <div className="chart-header">
                         <h2>조회 기간 설정</h2>
-                        <p>리포트와 분석 화면에서 기본으로 사용할 기준 연도입니다.</p>
+                        <p>리포트와 분석 화면에서 기본으로 사용할 기준 월입니다.</p>
                     </div>
 
                     <div className="configuration-form-grid">
                         <label className="filter-field">
-                            <span>기준 연도</span>
-                            <select value={baseYear} onChange={(event) => setBaseYear(event.target.value)}>
-                                {yearOptions.map((year) => (
-                                    <option key={year} value={year}>
-                                        {year}
+                            <span>기준 월</span>
+                            <select value={baseMonth} onChange={(event) => setBaseMonth(event.target.value)}>
+                                {monthOptions.map((month) => (
+                                    <option key={month} value={month}>
+                                        {month}
                                     </option>
                                 ))}
                             </select>
@@ -82,8 +82,8 @@ function Configuration() {
 
                         <div className="configuration-summary-box">
                             <span>현재 기준</span>
-                            <strong>{baseYear}</strong>
-                            <p>KOSIS 응답 데이터의 최신 연도를 화면 기준으로 사용합니다.</p>
+                            <strong>{baseMonth}</strong>
+                            <p>KOSIS 응답 데이터의 최신 월을 화면 기준으로 사용합니다.</p>
                         </div>
                     </div>
                 </Card>

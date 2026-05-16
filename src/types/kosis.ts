@@ -6,9 +6,11 @@ export type KosisEmploymentRow = {
     ITM_NM: string
     C1: string
     C1_NM: string
+    C1_NM_ENG?: string
     C1_OBJ_NM: string
     C2: string
     C2_NM: string
+    C2_NM_ENG?: string
     C2_OBJ_NM: string
     PRD_SE: string
     PRD_DE: string
@@ -21,7 +23,7 @@ export type EmploymentSummary = {
     latestPeriod: string
     nationalRate: number
     selectedRegionRate: number | null
-    yearlyChange: number | null
+    monthlyChange: number | null
     genderGap: number | null
 }
 

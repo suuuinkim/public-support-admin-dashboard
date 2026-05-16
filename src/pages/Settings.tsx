@@ -2,12 +2,12 @@ import {useState} from 'react'
 import Card from '../components/common/Card'
 
 const regionOptions = ['전체 지역', '서울', '경기', '부산', '대구', '인천']
-const periodOptions = ['2025', '2023-2025', '2021-2025']
-const reportTypeOptions = ['지역별 고용률 요약', '성별 고용률 비교', '연도별 고용률 변화']
+const periodOptions = ['2026.04', '최근 12개월', '최근 48개월']
+const reportTypeOptions = ['지역별 고용률 요약', '성별 고용률 비교', '월별 고용률 변화']
 
 function Settings() {
     const [defaultRegion, setDefaultRegion] = useState('전체 지역')
-    const [defaultPeriod, setDefaultPeriod] = useState('2025')
+    const [defaultPeriod, setDefaultPeriod] = useState('2026.04')
     const [defaultReportType, setDefaultReportType] = useState('지역별 고용률 요약')
 
     return (
