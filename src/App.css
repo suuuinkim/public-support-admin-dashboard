@@ -382,69 +382,6 @@
     font-weight: 600;
 }
 
-.qualification-summary-cards {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
-    margin-top: 24px;
-}
-
-.qualification-summary-card {
-    padding: 20px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #2c5f4e, #3a6b5a);
-    color: #fff;
-    box-shadow: 0 12px 24px rgba(44, 95, 78, .18);
-}
-
-.qualification-summary-header,
-.qualification-summary-footer,
-.qualification-summary-value {
-    display: flex;
-    align-items: center;
-}
-
-.qualification-summary-header,
-.qualification-summary-footer {
-    justify-content: space-between;
-}
-
-.qualification-summary-header {
-    margin-bottom: 12px;
-}
-
-.qualification-summary-header > span:first-child {
-    font-weight: 600;
-}
-
-.qualification-status {
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: #7bdc93;
-    color: #2c5f4e;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.qualification-summary-value {
-    gap: 4px;
-    margin-bottom: 10px;
-}
-
-.qualification-summary-value strong {
-    font-size: 24px;
-}
-
-.qualification-summary-value span,
-.qualification-summary-footer {
-    color: rgba(255, 255, 255, .75);
-}
-
-.qualification-summary-footer {
-    gap: 12px;
-    font-size: 12px;
-}
-
 .trend {
     font-weight: 600;
     white-space: nowrap;
@@ -635,10 +572,6 @@
         width: 100%;
     }
 
-    .qualification-summary-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .chart-grid {
         grid-template-columns: 1fr;
     }
@@ -731,7 +664,6 @@
 
     .filter-grid,
     .dashboard-grid,
-    .qualification-summary-cards,
     .chart-grid {
         grid-template-columns: 1fr;
     }
@@ -776,14 +708,6 @@
         width: 100%;
     }
 
-    .configuration-page {
-        padding: 16px;
-    }
-
-    .qualification-group-list,
-    .configuration-form-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 .analytics-page {
@@ -973,75 +897,6 @@
     white-space: nowrap;
 }
 
-.configuration-page {
-    padding: 24px;
-}
-
-.configuration-card {
-    padding: 20px;
-    margin-bottom: 24px;
-}
-
-.configuration-card:last-child {
-    margin-bottom: 0;
-}
-
-.qualification-group-list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.qualification-group-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--secondary);
-    cursor: pointer;
-    font-weight: 500;
-    transition: border-color .15s, background .15s;
-}
-
-.qualification-group-item:hover {
-    border-color: var(--primary);
-    background: #f8fffb;
-}
-
-.qualification-group-item input {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--primary);
-}
-
-.configuration-form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) 220px;
-    gap: 16px;
-    align-items: end;
-}
-
-.configuration-summary-box {
-    height: 42px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 12px;
-    border-radius: var(--radius);
-    background: var(--secondary);
-}
-
-.configuration-summary-box span {
-    color: var(--muted-foreground);
-    font-size: 12px;
-}
-
-.configuration-summary-box strong {
-    margin-top: 2px;
-}
-
 .settings-page {
     padding: 24px;
 }
@@ -1126,41 +981,18 @@
 }
 
 @media (max-width: 1100px) {
-    .qualification-group-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .configuration-form-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .configuration-summary-box {
-        grid-column: 1 / -1;
-    }
-
     .settings-form-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 760px) {
-    .configuration-page,
     .settings-page {
         padding: 16px;
     }
 
-    .qualification-group-list,
-    .configuration-form-grid,
     .settings-form-grid {
         grid-template-columns: 1fr;
-    }
-
-    .configuration-summary-box {
-        grid-column: auto;
-    }
-
-    .configuration-card {
-        overflow-x: auto;
     }
 
     .profile-summary,

@@ -68,15 +68,6 @@ function AnalyticsIcon({className}: IconProps) {
     )
 }
 
-function ConfigurationIcon({className}: IconProps) {
-    return (
-        <IconBase className={className}>
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 1 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 .9-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5.9h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/>
-        </IconBase>
-    )
-}
-
 function ReportsIcon({className}: IconProps) {
     return (
         <IconBase className={className}>
@@ -101,7 +92,6 @@ function SettingsIcon({className}: IconProps) {
 const menuItems: MenuItem[] = [
     {id: 'dashboard', label: '대시보드', description: '고용률 요약', Icon: DashboardIcon},
     {id: 'analytics', label: '분석', description: '증감률 비교', Icon: AnalyticsIcon},
-    {id: 'configuration', label: 'Configuration', description: '조회 기준 설정', Icon: ConfigurationIcon},
     {id: 'reports', label: '리포트', description: '통계 표 생성', Icon: ReportsIcon},
     {id: 'settings', label: '환경 설정', description: '기본 조건 관리', Icon: SettingsIcon},
 ]

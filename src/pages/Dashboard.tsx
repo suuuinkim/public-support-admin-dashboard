@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react'
 import Card from '../components/common/Card'
 import FilterSection from '../components/dashboard/FilterSection'
 import QualificationCategoryChart from '../components/dashboard/QualificationCategoryChart'
-import QualificationSummaryCards from '../components/dashboard/QualificationSummaryCards'
 import YearlyTrendChart from '../components/dashboard/YearlyTrendChart'
 import RegionEmploymentBarChart from '../components/charts/RegionEmploymentBarChart'
 import {regionOptions} from '../data/dashboardData'
@@ -10,13 +9,15 @@ import {
     createEmploymentSummary,
     createRegionTopFive,
     createGenderEmploymentRates,
+    createMonthlyEmploymentTrend,
     fetchEmploymentRows,
 } from '../services/kosisService'
 import type {
     EmploymentSummary,
     GenderEmploymentRate,
     KosisDataSource,
-    RegionEmploymentRank
+    RegionEmploymentRank,
+    MonthlyEmploymentTrend
 } from '../types/kosis'
 
 const rangeLabels: Record<string, string> = {
@@ -52,7 +53,7 @@ function toPeriodCode(month: string) {
 function Dashboard() {
     const [selectedRegionId, setSelectedRegionId] = useState('seoul')
     const [baseMonth, setBaseMonth] = useState('2026.04')
-    const [range, setRange] = useState('single-month')
+    const [range, setRange] = useState('last-12-months')
     const selectedRegion = regionOptions.find((region) => region.value === selectedRegionId)
     const [employmentSummary, setEmploymentSummary] = useState<EmploymentSummary | null>(null)
     const [regionTopFive, setRegionTopFive] = useState<RegionEmploymentRank[]>([])
@@ -64,6 +65,7 @@ function Dashboard() {
     const rangeLabel = rangeLabels[range] ?? range
     const dataSourceLabel = dataSource === 'kosis' ? 'KOSIS 실시간 데이터' : 'Fallback 임시 데이터'
     const latestPeriodLabel = formatPeriod(employmentSummary?.latestPeriod)
+    const [monthlyTrend, setMonthlyTrend] = useState<MonthlyEmploymentTrend[]>([])
 
     useEffect(() => {
         const selectedRegionName = selectedRegion?.kosisName ?? '서울특별시'
@@ -79,6 +81,7 @@ function Dashboard() {
                 setEmploymentSummary(createEmploymentSummary(data.rows, selectedRegionName, basePeriod))
                 setGenderEmploymentRates(createGenderEmploymentRates(data.rows, selectedRegionName, basePeriod))
                 setRegionTopFive(createRegionTopFive(data.rows, basePeriod))
+                setMonthlyTrend(createMonthlyEmploymentTrend(data.rows, selectedRegionName, range))
                 setDataSource(data.source)
                 setFallbackReason(data.reason ?? '')
             })
@@ -86,13 +89,15 @@ function Dashboard() {
                 setEmploymentSummary(null)
                 setGenderEmploymentRates([])
                 setRegionTopFive([])
+                setMonthlyTrend([])
+
                 setDataSource(null)
                 setEmploymentErrorMessage('KOSIS 고용률 데이터를 불러오지 못했습니다.')
             })
             .finally(() => {
                 setIsEmploymentLoading(false)
             })
-    }, [baseMonth, selectedRegion?.kosisName])
+    }, [baseMonth, range, selectedRegion?.kosisName])
 
     const employmentCards = [
         {
@@ -168,7 +173,7 @@ function Dashboard() {
                 ))}
             </div>
 
-            <QualificationSummaryCards/>
+            {/*<QualificationSummaryCards/>*/}
 
             <Card className="employment-ranking-card">
                 <div className="chart-header">
@@ -214,7 +219,10 @@ function Dashboard() {
                 />
 
 
-                <YearlyTrendChart dataScope={`${baseMonth} 기준 ${rangeLabel}`}/>
+                <YearlyTrendChart
+                    dataScope={`${baseMonth} 기준 ${rangeLabel}`}
+                    data={monthlyTrend}
+                />
             </div>
         </section>
     )

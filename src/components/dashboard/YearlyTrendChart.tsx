@@ -10,24 +10,24 @@ import {
     PointElement,
     Tooltip,
 } from 'chart.js'
-import {monthlyTrendData} from '../../data/dashboardData'
+import type {MonthlyEmploymentTrend} from '../../types/kosis'
 import Card from '../common/Card'
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip, Legend)
 
 type MonthlyTrendChartProps = {
     dataScope: string
+    data: MonthlyEmploymentTrend[]
 }
 
-function YearlyTrendChart({dataScope}: MonthlyTrendChartProps) {
+function YearlyTrendChart({dataScope, data}: MonthlyTrendChartProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const chartRef = useRef<Chart | null>(null)
-    const labels = monthlyTrendData.map((item) => item.month)
-    const actualRates = monthlyTrendData.map((item) => Number(item.actual))
-    const baselineRates = monthlyTrendData.map((item) => Number(item.baseline))
+    const labels = data.map((item) => item.month)
+    const actualRates = data.map((item) => item.rate)
 
     useEffect(() => {
-        if (!canvasRef.current) return
+        if (!canvasRef.current || data.length === 0) return
 
         chartRef.current?.destroy()
 
@@ -54,18 +54,6 @@ function YearlyTrendChart({dataScope}: MonthlyTrendChartProps) {
                         pointRadius: 0,
                         pointHoverRadius: 4,
                         pointBackgroundColor: '#22c55e',
-                    },
-                    {
-                        label: '기준선',
-                        data: baselineRates,
-                        borderColor: '#94a3b8',
-                        borderDash: [5, 5],
-                        borderWidth: 1.5,
-                        backgroundColor: 'transparent',
-                        fill: false,
-                        tension: 0.35,
-                        pointRadius: 0,
-                        pointHoverRadius: 3,
                     },
                 ],
             },
@@ -133,7 +121,7 @@ function YearlyTrendChart({dataScope}: MonthlyTrendChartProps) {
         return () => {
             chartRef.current?.destroy()
         }
-    }, [])
+    }, [data])
 
     return (
         <Card className="chart-card">
@@ -145,7 +133,15 @@ function YearlyTrendChart({dataScope}: MonthlyTrendChartProps) {
             </div>
 
             <div className="monthly-trend-chart">
-                <canvas ref={canvasRef}/>
+                {data.length === 0 ? (
+                    <div className="empty-table-message">
+                        표시할 월별 고용률 데이터가 없습니다.
+                    </div>
+                ) : (
+                    <div className="monthly-trend-chart">
+                        <canvas ref={canvasRef}/>
+                    </div>
+                )}
             </div>
         </Card>
     )

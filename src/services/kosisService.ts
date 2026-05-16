@@ -4,6 +4,7 @@ import type {
     KosisEmploymentRow,
     RegionEmploymentRank,
     GenderEmploymentRate,
+    MonthlyEmploymentTrend,
 } from '../types/kosis'
 
 export async function fetchEmploymentRows(): Promise<KosisEmploymentResponse> {
@@ -162,4 +163,26 @@ export function createGenderEmploymentRates(
         {label: '남자', value: male ? Number(male.DT) : 0},
         {label: '여자', value: female ? Number(female.DT) : 0},
     ].filter((item) => item.value > 0)
+}
+
+export function createMonthlyEmploymentTrend(
+    rows: KosisEmploymentRow[],
+    selectedRegionName: string,
+    range: string
+): MonthlyEmploymentTrend[] {
+    const monthCount = range === 'last-48-months' ? 48 : range === 'last-12-months' ? 12 : 1
+
+    return rows
+        .filter((row) =>
+            isSelectedRegion(row, selectedRegionName) &&
+            isTotalGender(row) &&
+            row.PRD_DE &&
+            row.DT
+        )
+        .sort((a,b) => a.PRD_DE.localeCompare(b.PRD_DE))
+        .slice(-monthCount)
+        .map((row) => ({
+            month: `${row.PRD_DE.slice(0, 4)}.${row.PRD_DE.slice(4, 6)}`,
+            rate: Number(row.DT),
+        }))
 }

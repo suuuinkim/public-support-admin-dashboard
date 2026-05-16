@@ -3,7 +3,6 @@ import Sidebar from './Sidebar'
 import Dashboard from '../../pages/Dashboard'
 import Analytics from '../../pages/Analytics'
 import Reports from '../../pages/Reports'
-import Configuration from '../../pages/Configuration'
 import Settings from '../../pages/Settings'
 
 function Layout() {
@@ -16,7 +15,6 @@ function Layout() {
             <main className="app-main">
                 {page === 'dashboard' && <Dashboard/>}
                 {page === 'analytics' && <Analytics/>}
-                {page === 'configuration' && <Configuration/>}
                 {page === 'reports' && <Reports/>}
                 {page === 'settings' && <Settings/>}
             </main>

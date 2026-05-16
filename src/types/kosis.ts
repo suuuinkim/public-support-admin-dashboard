@@ -45,3 +45,8 @@ export type GenderEmploymentRate = {
     label: string
     value: number
 }
+
+export type MonthlyEmploymentTrend = {
+    month: string
+    rate: number
+}
