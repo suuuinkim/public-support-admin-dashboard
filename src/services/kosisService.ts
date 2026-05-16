@@ -15,9 +15,17 @@ export async function fetchEmploymentRows(): Promise<KosisEmploymentResponse> {
     return response.json()
 }
 
-function getLatestPeriod(rows: KosisEmploymentRow[]) {
+function getLatestPeriod(rows: KosisEmploymentRow[], basePeriod?: string) {
     return rows
         .map((row) => row.PRD_DE)
+        .filter((period) => !basePeriod || Number(period) <= Number(basePeriod))
+        .sort((a, b) => Number(b) - Number(a))[0]
+}
+
+function getPreviousPeriod(rows: KosisEmploymentRow[], selectedPeriod: string) {
+    return rows
+        .map((row) => row.PRD_DE)
+        .filter((period) => Number(period) < Number(selectedPeriod))
         .sort((a, b) => Number(b) - Number(a))[0]
 }
 
@@ -48,8 +56,10 @@ function isSelectedRegion(row: KosisEmploymentRow, selectedRegionName: string) {
 export function createEmploymentSummary(
     rows: KosisEmploymentRow[],
     selectedRegionName: string,
+    basePeriod?: string,
 ): EmploymentSummary {
-    const latestPeriod = getLatestPeriod(rows)
+    const latestPeriod = getLatestPeriod(rows, basePeriod)
+    const previousPeriod = getPreviousPeriod(rows, latestPeriod)
 
     const nationalLatest = rows.find(
         (row) => row.PRD_DE === latestPeriod && isNational(row) && isTotalGender(row),
@@ -61,11 +71,6 @@ export function createEmploymentSummary(
             isSelectedRegion(row, selectedRegionName) &&
             isTotalGender(row),
     )
-
-    const previousPeriod = rows
-        .map((row) => row.PRD_DE)
-        .filter((period) => period !== latestPeriod)
-        .sort((a, b) => Number(b) - Number(a))[0]
 
     const selectedRegionPrevious = rows.find(
         (row) =>
@@ -104,8 +109,8 @@ export function createEmploymentSummary(
     }
 }
 
-export function createRegionTopFive(rows: KosisEmploymentRow[]): RegionEmploymentRank[] {
-    const latestPeriod = getLatestPeriod(rows)
+export function createRegionTopFive(rows: KosisEmploymentRow[], basePeriod?: string): RegionEmploymentRank[] {
+    const latestPeriod = getLatestPeriod(rows, basePeriod)
 
     return rows
         .filter(

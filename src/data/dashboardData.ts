@@ -4,42 +4,160 @@ export const dashboardSummaryByTarget = {
         qualificationItems: '서울특별시',
         growthRate: '+0.3%p',
     },
-    gyeonggi: {
-        certifiedPeople: '63.5%',
-        qualificationItems: '경기도',
-        growthRate: '+0.2%p',
-    },
     busan: {
         certifiedPeople: '58.2%',
         qualificationItems: '부산광역시',
         growthRate: '-0.1%p',
     },
-    'capital-area': {
-        certifiedPeople: '63.4%',
-        qualificationItems: '수도권',
+    daegu: {
+        certifiedPeople: '58.4%',
+        qualificationItems: '대구광역시',
+        growthRate: '+0.4%p',
+    },
+    incheon: {
+        certifiedPeople: '63.3%',
+        qualificationItems: '인천광역시',
+        growthRate: '+0.3%p',
+    },
+    gwangju: {
+        certifiedPeople: '61.7%',
+        qualificationItems: '광주광역시',
+        growthRate: '+0.4%p',
+    },
+    daejeon: {
+        certifiedPeople: '61.7%',
+        qualificationItems: '대전광역시',
+        growthRate: '+0.3%p',
+    },
+    ulsan: {
+        certifiedPeople: '61.0%',
+        qualificationItems: '울산광역시',
+        growthRate: '-0.2%p',
+    },
+    sejong: {
+        certifiedPeople: '65.7%',
+        qualificationItems: '세종특별자치시',
+        growthRate: '+0.5%p',
+    },
+    gyeonggi: {
+        certifiedPeople: '63.5%',
+        qualificationItems: '경기도',
         growthRate: '+0.2%p',
     },
-    'chungcheong-area': {
-        certifiedPeople: '67.3%',
-        qualificationItems: '충청권',
+    gangwon: {
+        certifiedPeople: '66.4%',
+        qualificationItems: '강원특별자치도',
+        growthRate: '+0.3%p',
+    },
+    chungbuk: {
+        certifiedPeople: '66.9%',
+        qualificationItems: '충청북도',
         growthRate: '+0.4%p',
+    },
+    chungnam: {
+        certifiedPeople: '67.8%',
+        qualificationItems: '충청남도',
+        growthRate: '+0.4%p',
+    },
+    jeonbuk: {
+        certifiedPeople: '64.5%',
+        qualificationItems: '전북특별자치도',
+        growthRate: '+0.3%p',
+    },
+    jeonnam: {
+        certifiedPeople: '65.9%',
+        qualificationItems: '전라남도',
+        growthRate: '+0.4%p',
+    },
+    gyeongbuk: {
+        certifiedPeople: '63.5%',
+        qualificationItems: '경상북도',
+        growthRate: '+0.3%p',
+    },
+    gyeongnam: {
+        certifiedPeople: '63.8%',
+        qualificationItems: '경상남도',
+        growthRate: '+0.4%p',
+    },
+    jeju: {
+        certifiedPeople: '71.7%',
+        qualificationItems: '제주도',
+        growthRate: '+0.5%p',
     },
 }
 
 export type DashboardTargetId = keyof typeof dashboardSummaryByTarget
 
 export const regionOptions = [
-    {value: 'seoul', label: '서울', kosisName: '서울특별시'},
-    {value: 'gyeonggi', label: '경기', kosisName: '경기도'},
-    {value: 'busan', label: '부산', kosisName: '부산광역시'},
+    {value: 'seoul', label: '서울특별시', kosisName: '서울특별시'},
+    {value: 'busan', label: '부산광역시', kosisName: '부산광역시'},
+    {value: 'daegu', label: '대구광역시', kosisName: '대구광역시'},
+    {value: 'incheon', label: '인천광역시', kosisName: '인천광역시'},
+    {value: 'gwangju', label: '광주광역시', kosisName: '광주광역시'},
+    {value: 'daejeon', label: '대전광역시', kosisName: '대전광역시'},
+    {value: 'ulsan', label: '울산광역시', kosisName: '울산광역시'},
+    {value: 'sejong', label: '세종특별자치시', kosisName: '세종특별자치시'},
+    {value: 'gyeonggi', label: '경기도', kosisName: '경기도'},
+    {value: 'gangwon', label: '강원특별자치도', kosisName: '강원특별자치도'},
+    {value: 'chungbuk', label: '충청북도', kosisName: '충청북도'},
+    {value: 'chungnam', label: '충청남도', kosisName: '충청남도'},
+    {value: 'jeonbuk', label: '전북특별자치도', kosisName: '전북특별자치도'},
+    {value: 'jeonnam', label: '전라남도', kosisName: '전라남도'},
+    {value: 'gyeongbuk', label: '경상북도', kosisName: '경상북도'},
+    {value: 'gyeongnam', label: '경상남도', kosisName: '경상남도'},
+    {value: 'jeju', label: '제주도', kosisName: '제주도'},
 ] as const
 
-export const areaOptions = [
-    {value: 'capital-area', label: '수도권', kosisName: '경기도'},
-    {value: 'chungcheong-area', label: '충청권', kosisName: '충청남도'},
+export const monthOptions = [
+    '2026.04',
+    '2026.03',
+    '2026.02',
+    '2026.01',
+    '2025.12',
+    '2025.11',
+    '2025.10',
+    '2025.09',
+    '2025.08',
+    '2025.07',
+    '2025.06',
+    '2025.05',
+    '2025.04',
+    '2025.03',
+    '2025.02',
+    '2025.01',
+    '2024.12',
+    '2024.11',
+    '2024.10',
+    '2024.09',
+    '2024.08',
+    '2024.07',
+    '2024.06',
+    '2024.05',
+    '2024.04',
+    '2024.03',
+    '2024.02',
+    '2024.01',
+    '2023.12',
+    '2023.11',
+    '2023.10',
+    '2023.09',
+    '2023.08',
+    '2023.07',
+    '2023.06',
+    '2023.05',
+    '2023.04',
+    '2023.03',
+    '2023.02',
+    '2023.01',
+    '2022.12',
+    '2022.11',
+    '2022.10',
+    '2022.09',
+    '2022.08',
+    '2022.07',
+    '2022.06',
+    '2022.05',
 ] as const
-
-export const targetOptions = [...regionOptions, ...areaOptions] as const
 
 export const qualificationSummaryCards = [
     {
@@ -84,7 +202,7 @@ export const qualificationCategoryData = [
     {label: '전체', value: 63},
     {label: '남자', value: 70.5},
     {label: '여자', value: 55.7},
-    {label: '선택 지역', value: 61.4},
+    {label: '선택 시도', value: 61.4},
 ] as const
 
 export const monthlyTrendData = [

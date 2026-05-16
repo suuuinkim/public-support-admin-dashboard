@@ -1,6 +1,6 @@
 import {fallbackEmploymentRows} from './fallbackEmploymentRows.js'
 
-const KOSIS_URL = 'http://kosis.kr/openapi/Param/statisticsParameterData.do'
+const KOSIS_URL = 'https://kosis.kr/openapi/Param/statisticsParameterData.do'
 const FETCH_TIMEOUT_MS = 10000
 const RETRY_COUNT = 2
 
@@ -68,9 +68,9 @@ export default async function handler(request, response) {
   const params = new URLSearchParams({
     method: 'getList',
     apiKey,
-    itmId: itemId,
+    itmId: `${itemId} `,
     objL1: 'ALL',
-    objL2: '0 2 3',
+    objL2: '0 2 3 ',
     objL3: '',
     objL4: '',
     objL5: '',
@@ -81,9 +81,8 @@ export default async function handler(request, response) {
     jsonVD: 'Y',
     prdSe: 'M',
     newEstPrdCnt: '48',
-    prdInterval : 2026,
     outputFields:
-      'ORG_ID TBL_ID TBL_NM OBJ_ID OBJ_NM OBJ_NM_ENG NM NM_ENG ITM_ID ITM_NM ITM_NM_ENG UNIT_NM UNIT_NM_ENG PRD_SE PRD_DE LST_CHN_DE',
+      'ORG_ID TBL_ID TBL_NM OBJ_ID OBJ_NM OBJ_NM_ENG NM NM_ENG ITM_ID ITM_NM ITM_NM_ENG UNIT_NM UNIT_NM_ENG PRD_SE PRD_DE LST_CHN_DE ',
     orgId,
     tblId: tableId,
   })

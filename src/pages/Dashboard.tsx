@@ -5,7 +5,7 @@ import QualificationCategoryChart from '../components/dashboard/QualificationCat
 import QualificationSummaryCards from '../components/dashboard/QualificationSummaryCards'
 import YearlyTrendChart from '../components/dashboard/YearlyTrendChart'
 import RegionEmploymentBarChart from '../components/charts/RegionEmploymentBarChart'
-import {targetOptions} from '../data/dashboardData'
+import {regionOptions} from '../data/dashboardData'
 import {
     createEmploymentSummary,
     createRegionTopFive,
@@ -13,17 +13,8 @@ import {
 } from '../services/kosisService'
 import type {EmploymentSummary, KosisDataSource, RegionEmploymentRank} from '../types/kosis'
 
-type TargetType = 'region' | 'area'
-
-const dataModeLabels: Record<string, string> = {
-    'real-time': '최근 월',
-    historical: '월별 추이',
-    combined: '최근 48개월',
-}
-
-const periodLabels: Record<string, string> = {
-    'latest-month': '2026.04',
-    'previous-month': '2026.03',
+const rangeLabels: Record<string, string> = {
+    'single-month': '해당 월',
     'last-12-months': '최근 12개월',
     'last-48-months': '최근 48개월',
 }
@@ -48,12 +39,15 @@ function formatPeriod(period?: string) {
     return `${period.slice(0, 4)}.${period.slice(4, 6)}`
 }
 
+function toPeriodCode(month: string) {
+    return month.replace('.', '')
+}
+
 function Dashboard() {
-    const [targetType, setTargetType] = useState<TargetType>('region')
-    const [selectedTargetId, setSelectedTargetId] = useState('seoul')
-    const [dataMode, setDataMode] = useState('real-time')
-    const [period, setPeriod] = useState('latest-month')
-    const selectedTarget = targetOptions.find((target) => target.value === selectedTargetId)
+    const [selectedRegionId, setSelectedRegionId] = useState('seoul')
+    const [baseMonth, setBaseMonth] = useState('2026.04')
+    const [range, setRange] = useState('single-month')
+    const selectedRegion = regionOptions.find((region) => region.value === selectedRegionId)
     const [employmentSummary, setEmploymentSummary] = useState<EmploymentSummary | null>(null)
     const [regionTopFive, setRegionTopFive] = useState<RegionEmploymentRank[]>([])
     const [isEmploymentLoading, setIsEmploymentLoading] = useState(false)
@@ -61,13 +55,12 @@ function Dashboard() {
     const [dataSource, setDataSource] = useState<KosisDataSource | null>(null)
     const [fallbackReason, setFallbackReason] = useState('')
 
-    const dataModeLabel = dataModeLabels[dataMode] ?? dataMode
-    const periodLabel = periodLabels[period] ?? period
+    const rangeLabel = rangeLabels[range] ?? range
     const dataSourceLabel = dataSource === 'kosis' ? 'KOSIS 실시간 데이터' : 'Fallback 임시 데이터'
     const latestPeriodLabel = formatPeriod(employmentSummary?.latestPeriod)
 
     useEffect(() => {
-        const selectedRegionName = selectedTarget?.kosisName ?? '계'
+        const selectedRegionName = selectedRegion?.kosisName ?? '서울특별시'
 
         setIsEmploymentLoading(true)
         setEmploymentErrorMessage('')
@@ -75,8 +68,10 @@ function Dashboard() {
 
         fetchEmploymentRows()
             .then((data) => {
-                setEmploymentSummary(createEmploymentSummary(data.rows, selectedRegionName))
-                setRegionTopFive(createRegionTopFive(data.rows))
+                const basePeriod = toPeriodCode(baseMonth)
+
+                setEmploymentSummary(createEmploymentSummary(data.rows, selectedRegionName, basePeriod))
+                setRegionTopFive(createRegionTopFive(data.rows, basePeriod))
                 setDataSource(data.source)
                 setFallbackReason(data.reason ?? '')
             })
@@ -89,7 +84,7 @@ function Dashboard() {
             .finally(() => {
                 setIsEmploymentLoading(false)
             })
-    }, [selectedTarget?.kosisName])
+    }, [baseMonth, selectedRegion?.kosisName])
 
     const employmentCards = [
         {
@@ -98,14 +93,14 @@ function Dashboard() {
             description: employmentSummary ? `${latestPeriodLabel} 기준` : 'KOSIS 고용률',
         },
         {
-            label: '선택 대상 고용률',
+            label: '선택 시도 고용률',
             value: formatRate(employmentSummary?.selectedRegionRate),
-            description: selectedTarget?.label ?? '선택 대상',
+            description: `${selectedRegion?.label ?? '선택 시도'} / ${baseMonth}`,
         },
         {
             label: '전월 대비 증감',
             value: formatPoint(employmentSummary?.monthlyChange),
-            description: '선택 대상 기준',
+            description: `${baseMonth} 기준`,
         },
     ]
 
@@ -114,7 +109,7 @@ function Dashboard() {
             <header className="dashboard-header">
                 <div>
                     <h1>지역 고용 통계 관리자 대시보드</h1>
-                    <p>시도와 권역별 월간 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
+                    <p>시도별 월간 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
                 </div>
 
                 <div className="status-badge">
@@ -124,20 +119,18 @@ function Dashboard() {
             </header>
 
             <FilterSection
-                targetType={targetType}
-                setTargetType={setTargetType}
-                selectedTargetId={selectedTargetId}
-                setSelectedTargetId={setSelectedTargetId}
-                dataMode={dataMode}
-                setDataMode={setDataMode}
-                period={period}
-                setPeriod={setPeriod}
+                selectedRegionId={selectedRegionId}
+                setSelectedRegionId={setSelectedRegionId}
+                baseMonth={baseMonth}
+                setBaseMonth={setBaseMonth}
+                range={range}
+                setRange={setRange}
             />
 
             <div className="filter-summary">
-                <span>현재 조회 범위</span>
-                <strong>{selectedTarget?.label}</strong>
-                <span>{dataModeLabel} / {periodLabel}</span>
+                <span>현재 조회 조건</span>
+                <strong>{selectedRegion?.label}</strong>
+                <span>{baseMonth} / {rangeLabel}</span>
                 {dataSource && (
                     <span className={dataSource === 'kosis' ? 'data-source-badge' : 'data-source-badge fallback'}>
                         데이터 출처: {dataSourceLabel}
@@ -172,7 +165,7 @@ function Dashboard() {
             <Card className="employment-ranking-card">
                 <div className="chart-header">
                     <h2>지역별 고용률 Top 5</h2>
-                    <p>KOSIS 최신 월 기준 지역별 고용률 순위입니다.</p>
+                    <p>KOSIS 최신 월 기준 시도별 고용률 순위입니다.</p>
                 </div>
 
                 {isEmploymentLoading ? (
@@ -206,8 +199,8 @@ function Dashboard() {
             </Card>
 
             <div className="chart-grid">
-                <QualificationCategoryChart targetName={selectedTarget?.label ?? '선택 없음'} period={periodLabel}/>
-                <YearlyTrendChart dataScope={`${dataModeLabel} · 2022.05-2026.04`}/>
+                <QualificationCategoryChart targetName={selectedRegion?.label ?? '선택 없음'} period={`${baseMonth} / ${rangeLabel}`}/>
+                <YearlyTrendChart dataScope={`${baseMonth} 기준 ${rangeLabel}`}/>
             </div>
         </section>
     )
