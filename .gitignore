@@ -29,9 +29,8 @@ dist-ssr
 .DS_Store
 .vercel
 
-.pptx/
-.pptx
-
-.html
+*.pptx
+*.html
+!index.html
 
 presentation-workspace
