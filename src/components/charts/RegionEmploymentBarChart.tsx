@@ -1,11 +1,5 @@
-import {
-    BarElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    Tooltip,
-} from 'chart.js'
+import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Tooltip} from 'chart.js'
+import type {ChartOptions, TooltipItem} from 'chart.js'
 import {Bar} from 'react-chartjs-2'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
@@ -19,11 +13,7 @@ type RegionEmploymentBarChartProps = {
 
 function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
     if (data.length === 0) {
-        return (
-            <div className="empty-table-message">
-                표시할 고용률 차트 데이터가 없습니다.
-            </div>
-        )
+        return <div className="empty-table-message">표시할 고용률 차트 데이터가 없습니다.</div>
     }
 
     const chartData = {
@@ -43,22 +33,12 @@ function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
         ],
     }
 
-    const chartOptions = {
+    const chartOptions: ChartOptions<'bar'> = {
         indexAxis: 'y' as const,
         responsive: true,
         maintainAspectRatio: false,
-        layout: {
-            padding: {
-                top: 4,
-                right: 12,
-                bottom: 4,
-                left: 4,
-            },
-        },
         plugins: {
-            legend: {
-                display: false,
-            },
+            legend: {display: false},
             tooltip: {
                 backgroundColor: '#111827',
                 titleColor: '#ffffff',
@@ -67,7 +47,7 @@ function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
                 cornerRadius: 8,
                 displayColors: false,
                 callbacks: {
-                    label: (context: any) => `고용률 ${context.raw}%`,
+                    label: (context: TooltipItem<'bar'>) => `고용률 ${Number(context.raw)}%`,
                 },
             },
         },
@@ -75,33 +55,20 @@ function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
             x: {
                 min: 0,
                 max: 100,
-                grid: {
-                    color: 'rgba(229,231,235,.5)',
-                },
-                border: {
-                    display: false,
-                },
+                grid: {color: 'rgba(229,231,235,.5)'},
+                border: {display: false},
                 ticks: {
                     color: '#9ca3af',
-                    font: {
-                        size: 11,
-                    },
+                    font: {size: 11},
                     callback: (value: string | number) => `${value}%`,
                 },
             },
             y: {
-                grid: {
-                    display: false,
-                },
-                border: {
-                    display: false,
-                },
+                grid: {display: false},
+                border: {display: false},
                 ticks: {
                     color: '#374151',
-                    font: {
-                        size: 12,
-                        weight: 500,
-                    },
+                    font: {size: 12, weight: 500 as const},
                 },
             },
         },

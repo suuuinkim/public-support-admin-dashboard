@@ -1,23 +1,23 @@
 import {useEffect, useState} from 'react'
 import Card from '../components/common/Card'
+import RegionEmploymentBarChart from '../components/charts/RegionEmploymentBarChart'
 import FilterSection from '../components/dashboard/FilterSection'
 import QualificationCategoryChart from '../components/dashboard/QualificationCategoryChart'
 import YearlyTrendChart from '../components/dashboard/YearlyTrendChart'
-import RegionEmploymentBarChart from '../components/charts/RegionEmploymentBarChart'
 import {regionOptions} from '../data/dashboardData'
 import {
     createEmploymentSummary,
-    createRegionTopFive,
     createGenderEmploymentRates,
     createMonthlyEmploymentTrend,
+    createRegionTopFive,
     fetchEmploymentRows,
 } from '../services/kosisService'
 import type {
     EmploymentSummary,
     GenderEmploymentRate,
     KosisDataSource,
+    MonthlyEmploymentTrend,
     RegionEmploymentRank,
-    MonthlyEmploymentTrend
 } from '../types/kosis'
 
 const rangeLabels: Record<string, string> = {
@@ -62,17 +62,12 @@ function Dashboard() {
     const [dataSource, setDataSource] = useState<KosisDataSource | null>(null)
     const [fallbackReason, setFallbackReason] = useState('')
     const [genderEmploymentRates, setGenderEmploymentRates] = useState<GenderEmploymentRate[]>([])
-    const rangeLabel = rangeLabels[range] ?? range
-    const dataSourceLabel = dataSource === 'kosis' ? 'KOSIS 실시간 데이터' : 'Fallback 임시 데이터'
-    const latestPeriodLabel = formatPeriod(employmentSummary?.latestPeriod)
     const [monthlyTrend, setMonthlyTrend] = useState<MonthlyEmploymentTrend[]>([])
+    const rangeLabel = rangeLabels[range] ?? range
+    const latestPeriodLabel = formatPeriod(employmentSummary?.latestPeriod)
 
     useEffect(() => {
         const selectedRegionName = selectedRegion?.kosisName ?? '서울특별시'
-
-        setIsEmploymentLoading(true)
-        setEmploymentErrorMessage('')
-        setFallbackReason('')
 
         fetchEmploymentRows()
             .then((data) => {
@@ -84,15 +79,16 @@ function Dashboard() {
                 setMonthlyTrend(createMonthlyEmploymentTrend(data.rows, selectedRegionName, range))
                 setDataSource(data.source)
                 setFallbackReason(data.reason ?? '')
+                setEmploymentErrorMessage('')
             })
             .catch(() => {
                 setEmploymentSummary(null)
                 setGenderEmploymentRates([])
                 setRegionTopFive([])
                 setMonthlyTrend([])
-
                 setDataSource(null)
-                setEmploymentErrorMessage('KOSIS 고용률 데이터를 불러오지 못했습니다.')
+                setFallbackReason('')
+                setEmploymentErrorMessage('고용률 데이터를 불러오지 못했습니다.')
             })
             .finally(() => {
                 setIsEmploymentLoading(false)
@@ -121,13 +117,13 @@ function Dashboard() {
         <section className="dashboard-page">
             <header className="dashboard-header">
                 <div>
-                    <h1>지역 고용 통계 관리자 대시보드</h1>
-                    <p>시도별 월간 고용률 흐름과 주요 고용 지표를 확인합니다.</p>
+                    <h1>고용통계 인사이트 대시보드</h1>
+                    <p>시도별 고용률 흐름과 주요 고용 지표를 관리자 관점으로 확인합니다.</p>
                 </div>
 
                 <div className="status-badge">
                     <span className="status-dot"/>
-                    KOSIS 고용률 데이터 연동 중
+                    Mock API 기반 운영 화면
                 </div>
             </header>
 
@@ -146,22 +142,18 @@ function Dashboard() {
                 <span>{baseMonth} / {rangeLabel}</span>
                 {dataSource && (
                     <span className={dataSource === 'kosis' ? 'data-source-badge' : 'data-source-badge fallback'}>
-                        데이터 출처: {dataSourceLabel}
+                        데이터 출처: {dataSource === 'kosis' ? 'KOSIS API' : 'Fallback Mock'}
                     </span>
                 )}
             </div>
 
             {fallbackReason && (
                 <div className="info-message">
-                    KOSIS 연결이 불안정하여 2026.04 기준 fallback 데이터를 표시합니다.
+                    외부 API 연결이 불안정해 포트폴리오용 fallback 데이터를 표시합니다.
                 </div>
             )}
 
-            {employmentErrorMessage && (
-                <div className="error-message">
-                    {employmentErrorMessage}
-                </div>
-            )}
+            {employmentErrorMessage && <div className="error-message">{employmentErrorMessage}</div>}
 
             <div className="dashboard-grid">
                 {employmentCards.map((card) => (
@@ -173,12 +165,10 @@ function Dashboard() {
                 ))}
             </div>
 
-            {/*<QualificationSummaryCards/>*/}
-
             <Card className="employment-ranking-card">
                 <div className="chart-header">
                     <h2>지역별 고용률 Top 5</h2>
-                    <p>KOSIS 최신 월 기준 시도별 고용률 순위입니다.</p>
+                    <p>기준 월의 시도별 고용률 상위 지역입니다.</p>
                 </div>
 
                 {isEmploymentLoading ? (
@@ -217,7 +207,6 @@ function Dashboard() {
                     period={`${baseMonth} / ${rangeLabel}`}
                     data={genderEmploymentRates}
                 />
-
 
                 <YearlyTrendChart
                     dataScope={`${baseMonth} 기준 ${rangeLabel}`}

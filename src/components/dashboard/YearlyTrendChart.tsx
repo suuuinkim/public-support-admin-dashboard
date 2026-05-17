@@ -23,8 +23,6 @@ type MonthlyTrendChartProps = {
 function YearlyTrendChart({dataScope, data}: MonthlyTrendChartProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const chartRef = useRef<Chart | null>(null)
-    const labels = data.map((item) => item.month)
-    const actualRates = data.map((item) => item.rate)
 
     useEffect(() => {
         if (!canvasRef.current || data.length === 0) return
@@ -41,11 +39,11 @@ function YearlyTrendChart({dataScope, data}: MonthlyTrendChartProps) {
         chartRef.current = new Chart(ctx, {
             type: 'line',
             data: {
-                labels,
+                labels: data.map((item) => item.month),
                 datasets: [
                     {
                         label: '고용률',
-                        data: actualRates,
+                        data: data.map((item) => item.rate),
                         borderColor: '#22c55e',
                         borderWidth: 2,
                         backgroundColor: grad,
@@ -60,19 +58,11 @@ function YearlyTrendChart({dataScope, data}: MonthlyTrendChartProps) {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
+                interaction: {mode: 'index', intersect: false},
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: {
-                            boxWidth: 12,
-                            color: '#6b7280',
-                            font: {size: 12},
-                            padding: 16,
-                        },
+                        labels: {boxWidth: 12, color: '#6b7280', font: {size: 12}, padding: 16},
                     },
                     tooltip: {
                         mode: 'index',
@@ -84,29 +74,15 @@ function YearlyTrendChart({dataScope, data}: MonthlyTrendChartProps) {
                 },
                 scales: {
                     x: {
-                        grid: {
-                            color: 'rgba(229,231,235,.45)',
-                        },
-                        border: {
-                            display: false,
-                        },
-                        ticks: {
-                            color: '#9ca3af',
-                            font: {size: 11},
-                            maxRotation: 0,
-                            autoSkip: true,
-                            maxTicksLimit: 8,
-                        },
+                        grid: {color: 'rgba(229,231,235,.45)'},
+                        border: {display: false},
+                        ticks: {color: '#9ca3af', font: {size: 11}, maxRotation: 0, autoSkip: true, maxTicksLimit: 8},
                     },
                     y: {
                         min: 0,
                         max: 100,
-                        grid: {
-                            color: 'rgba(229,231,235,.5)',
-                        },
-                        border: {
-                            display: false,
-                        },
+                        grid: {color: 'rgba(229,231,235,.5)'},
+                        border: {display: false},
                         ticks: {
                             color: '#9ca3af',
                             font: {size: 11},
@@ -126,21 +102,15 @@ function YearlyTrendChart({dataScope, data}: MonthlyTrendChartProps) {
     return (
         <Card className="chart-card">
             <div className="chart-header">
-                <div>
-                    <h2>월별 고용률 추이</h2>
-                    <p>{dataScope}</p>
-                </div>
+                <h2>월별 고용률 추이</h2>
+                <p>{dataScope}</p>
             </div>
 
             <div className="monthly-trend-chart">
                 {data.length === 0 ? (
-                    <div className="empty-table-message">
-                        표시할 월별 고용률 데이터가 없습니다.
-                    </div>
+                    <div className="empty-table-message">표시할 월별 고용률 데이터가 없습니다.</div>
                 ) : (
-                    <div className="monthly-trend-chart">
-                        <canvas ref={canvasRef}/>
-                    </div>
+                    <canvas ref={canvasRef}/>
                 )}
             </div>
         </Card>

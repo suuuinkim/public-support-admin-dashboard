@@ -1,8 +1,16 @@
 import './App.css'
-import Layout from './components/layout/Layout'
+import {BrowserRouter} from 'react-router-dom'
+import AppRoutes from './routes/AppRoutes'
+import {AuthProvider} from './stores/AuthContext'
 
 function App() {
-  return <Layout/>
+  return (
+      <BrowserRouter>
+          <AuthProvider>
+              <AppRoutes/>
+          </AuthProvider>
+      </BrowserRouter>
+  )
 }
 
 export default App

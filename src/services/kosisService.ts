@@ -1,12 +1,12 @@
 import type {
+    EmploymentChangeRank,
     EmploymentSummary,
+    GenderEmploymentRate,
+    GenderMonthlyTrend,
     KosisEmploymentResponse,
     KosisEmploymentRow,
-    RegionEmploymentRank,
-    GenderEmploymentRate,
     MonthlyEmploymentTrend,
-    EmploymentChangeRank,
-    GenderMonthlyTrend,
+    RegionEmploymentRank,
 } from '../types/kosis'
 
 export async function fetchEmploymentRows(): Promise<KosisEmploymentResponse> {
@@ -68,37 +68,25 @@ export function createEmploymentSummary(
     const nationalLatest = rows.find(
         (row) => row.PRD_DE === latestPeriod && isNational(row) && isTotalGender(row),
     )
-
     const selectedRegionLatest = rows.find(
-        (row) =>
-            row.PRD_DE === latestPeriod &&
-            isSelectedRegion(row, selectedRegionName) &&
-            isTotalGender(row),
+        (row) => row.PRD_DE === latestPeriod && isSelectedRegion(row, selectedRegionName) && isTotalGender(row),
     )
-
     const selectedRegionPrevious = rows.find(
-        (row) =>
-            row.PRD_DE === previousPeriod &&
-            isSelectedRegion(row, selectedRegionName) &&
-            isTotalGender(row),
+        (row) => row.PRD_DE === previousPeriod && isSelectedRegion(row, selectedRegionName) && isTotalGender(row),
     )
-
     const maleLatest = rows.find(
         (row) => row.PRD_DE === latestPeriod && isSelectedRegion(row, selectedRegionName) && isMale(row),
     )
-
     const femaleLatest = rows.find(
         (row) => row.PRD_DE === latestPeriod && isSelectedRegion(row, selectedRegionName) && isFemale(row),
     )
 
     const selectedRegionRate = selectedRegionLatest ? toNumber(selectedRegionLatest.DT) : null
     const previousRate = selectedRegionPrevious ? toNumber(selectedRegionPrevious.DT) : null
-
     const monthlyChange =
         selectedRegionRate !== null && previousRate !== null
             ? Number((selectedRegionRate - previousRate).toFixed(1))
             : null
-
     const genderGap =
         maleLatest && femaleLatest
             ? Number((toNumber(maleLatest.DT) - toNumber(femaleLatest.DT)).toFixed(1))
@@ -117,12 +105,7 @@ export function createRegionTopFive(rows: KosisEmploymentRow[], basePeriod?: str
     const latestPeriod = getLatestPeriod(rows, basePeriod)
 
     return rows
-        .filter(
-            (row) =>
-                row.PRD_DE === latestPeriod &&
-                isTotalGender(row) &&
-                !isNational(row),
-        )
+        .filter((row) => row.PRD_DE === latestPeriod && isTotalGender(row) && !isNational(row))
         .map((row) => ({
             regionCode: row.C1,
             regionName: row.C1_NM,
@@ -138,27 +121,10 @@ export function createGenderEmploymentRates(
     basePeriod?: string,
 ): GenderEmploymentRate[] {
     const latestPeriod = getLatestPeriod(rows, basePeriod)
-
-    const total = rows.find(
-        (row) =>
-            row.PRD_DE === latestPeriod &&
-            row.C1_NM.includes(selectedRegionName) &&
-            (row.C2 === '0' || row.C2_NM === '계' || row.C2_NM_ENG === 'Total'),
-    )
-
-    const male = rows.find(
-        (row) =>
-            row.PRD_DE === latestPeriod &&
-            row.C1_NM.includes(selectedRegionName) &&
-            (row.C2 === '2' || row.C2_NM === '남자' || row.C2_NM_ENG === 'Male')
-    )
-
-    const female = rows.find(
-        (row) =>
-            row.PRD_DE === latestPeriod &&
-            row.C1_NM.includes(selectedRegionName) &&
-            (row.C2 === '3' || row.C2_NM === '여자' || row.C2_NM_ENG === 'Female')
-    )
+    const periodRows = rows.filter((row) => row.PRD_DE === latestPeriod && isSelectedRegion(row, selectedRegionName))
+    const total = periodRows.find(isTotalGender)
+    const male = periodRows.find(isMale)
+    const female = periodRows.find(isFemale)
 
     return [
         {label: '전체', value: total ? Number(total.DT) : 0},
@@ -170,18 +136,13 @@ export function createGenderEmploymentRates(
 export function createMonthlyEmploymentTrend(
     rows: KosisEmploymentRow[],
     selectedRegionName: string,
-    range: string
+    range: string,
 ): MonthlyEmploymentTrend[] {
     const monthCount = range === 'last-48-months' ? 48 : range === 'last-12-months' ? 12 : 1
 
     return rows
-        .filter((row) =>
-            isSelectedRegion(row, selectedRegionName) &&
-            isTotalGender(row) &&
-            row.PRD_DE &&
-            row.DT
-        )
-        .sort((a,b) => a.PRD_DE.localeCompare(b.PRD_DE))
+        .filter((row) => isSelectedRegion(row, selectedRegionName) && isTotalGender(row) && row.PRD_DE && row.DT)
+        .sort((a, b) => a.PRD_DE.localeCompare(b.PRD_DE))
         .slice(-monthCount)
         .map((row) => ({
             month: `${row.PRD_DE.slice(0, 4)}.${row.PRD_DE.slice(4, 6)}`,
@@ -191,22 +152,16 @@ export function createMonthlyEmploymentTrend(
 
 export function createMonthlyChangeTopFive(
     rows: KosisEmploymentRow[],
-    basePeriod?: string
+    basePeriod?: string,
 ): EmploymentChangeRank[] {
     const latestPeriod = getLatestPeriod(rows, basePeriod)
     const previousPeriod = getPreviousPeriod(rows, latestPeriod)
 
     return rows
-        .filter((row) =>
-            row.PRD_DE === latestPeriod &&
-            isTotalGender(row) &&
-            !isNational(row)
-        )
+        .filter((row) => row.PRD_DE === latestPeriod && isTotalGender(row) && !isNational(row))
         .map((currentRow) => {
-            const previousRow = rows.find((row) =>
-                row.PRD_DE === previousPeriod &&
-                row.C1 === currentRow.C1 &&
-                isTotalGender(row)
+            const previousRow = rows.find(
+                (row) => row.PRD_DE === previousPeriod && row.C1 === currentRow.C1 && isTotalGender(row),
             )
 
             if (!previousRow) {
@@ -225,8 +180,8 @@ export function createMonthlyChangeTopFive(
             }
         })
         .filter((item): item is EmploymentChangeRank => item !== null)
-        .sort((a,b) => b.change - a.change)
-        .slice(0,5)
+        .sort((a, b) => b.change - a.change)
+        .slice(0, 5)
 }
 
 export function createGenderMonthlyTrend(

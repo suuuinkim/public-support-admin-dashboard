@@ -1,5 +1,5 @@
 import Card from '../common/Card'
-import type {GenderEmploymentRate} from "../../types/kosis"
+import type {GenderEmploymentRate} from '../../types/kosis'
 
 type QualificationCategoryChartProps = {
     targetName: string
@@ -11,12 +11,8 @@ function QualificationCategoryChart({targetName, period, data}: QualificationCat
     return (
         <Card className="chart-card">
             <div className="chart-header">
-                <div>
-                    <h2>성별 고용률 비교</h2>
-                    <p>
-                        {targetName} / {period}
-                    </p>
-                </div>
+                <h2>성별 고용률 비교</h2>
+                <p>{targetName} / {period}</p>
             </div>
 
             <div className="bar-list">

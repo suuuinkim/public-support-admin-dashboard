@@ -40,6 +40,105 @@
     overflow-y: auto;
 }
 
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    min-height: 72px;
+    padding: 16px 24px;
+    background: rgba(248, 250, 249, .92);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted-foreground);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.breadcrumb strong {
+    color: var(--foreground);
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.topbar-user-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.25;
+}
+
+.topbar-user-meta strong {
+    font-size: 14px;
+}
+
+.topbar-user-meta span {
+    color: var(--muted-foreground);
+    font-size: 12px;
+}
+
+.role-switcher {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--foreground);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 24px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.role-super_admin {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+}
+
+.role-admin {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+
+.role-manager {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+
+.role-viewer {
+    background: #f3f4f6;
+    color: #4b5563;
+    border-color: #d1d5db;
+}
+
 .sidebar {
     width: 80px;
     flex-shrink: 0;
@@ -146,6 +245,7 @@
     position: relative;
     overflow: hidden;
     transition: background .2s, color .2s, width .28s cubic-bezier(.4, 0, .2, 1), border-radius .2s, transform .2s, box-shadow .2s;
+    text-decoration: none;
 }
 
 .sidebar.expanded .sidebar-menu {
@@ -205,6 +305,21 @@
 
 .sidebar-active-dot {
     display: none;
+}
+
+.admin-menu-mark {
+    display: none;
+}
+
+.sidebar.expanded .admin-menu-mark {
+    display: inline-flex;
+    margin-left: auto;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .2);
+    color: currentColor;
+    font-size: 10px;
+    font-weight: 700;
 }
 
 .sidebar.expanded .sidebar-active-dot {
@@ -851,6 +966,88 @@
     padding: 24px;
 }
 
+.admin-page {
+    padding: 24px;
+}
+
+.admin-card {
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.permission-matrix-card th,
+.permission-matrix-card td {
+    text-align: center;
+}
+
+.permission-matrix-card th:first-child,
+.permission-matrix-card td:first-child {
+    text-align: left;
+}
+
+.permission-allow,
+.permission-deny {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.permission-allow {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.permission-deny {
+    background: #f3f4f6;
+    color: #9ca3af;
+}
+
+.access-page {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.access-card {
+    width: min(100%, 520px);
+    padding: 36px;
+    text-align: center;
+}
+
+.access-code {
+    display: inline-flex;
+    margin-bottom: 14px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.access-card h1 {
+    margin-bottom: 8px;
+    font-size: 26px;
+}
+
+.access-card p {
+    margin-bottom: 20px;
+    color: var(--muted-foreground);
+}
+
 .settings-card {
     padding: 20px;
     margin-bottom: 24px;
@@ -939,6 +1136,32 @@
 @media (max-width: 760px) {
     .settings-page {
         padding: 16px;
+    }
+
+    .admin-page {
+        padding: 16px;
+    }
+
+    .topbar {
+        position: static;
+        padding: 12px 16px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar-user {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .topbar-user-meta {
+        align-items: flex-start;
+        margin-right: auto;
+    }
+
+    .page-header {
+        flex-direction: column;
     }
 
     .settings-form-grid {
