@@ -465,11 +465,20 @@
     padding: 14px;
     border-radius: var(--radius);
     background: var(--secondary);
+    border: 1px solid transparent;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.employment-ranking-row:hover {
+    transform: translateY(-3px);
+    border-color: var(--border);
+    box-shadow: 0 10px 22px rgba(16, 24, 40, .09);
 }
 
 .employment-ranking-row > strong {
     grid-column: 1 / -1;
     font-size: 22px;
+    color: var(--foreground);
 }
 
 .employment-ranking-row p {
@@ -489,6 +498,17 @@
     color: #fff;
     font-size: 12px;
     font-weight: 700;
+}
+
+.ranking-chart-box {
+    padding: 8px 8px 2px;
+    border-radius: var(--radius);
+    transition: background .18s ease, box-shadow .18s ease;
+}
+
+.ranking-chart-box:hover {
+    background: rgba(241, 245, 244, .52);
+    box-shadow: inset 0 0 0 1px rgba(229, 231, 235, .7);
 }
 
 .page-placeholder {
@@ -642,6 +662,88 @@
     height: 100%;
     border-radius: inherit;
     background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.gender-donut-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(160px, .9fr);
+    gap: 18px;
+    align-items: center;
+}
+
+.gender-donut-chart {
+    position: relative;
+    width: 100%;
+    height: 280px;
+}
+
+.gender-donut-center {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    line-height: 1.15;
+}
+
+.gender-donut-center span {
+    color: var(--muted-foreground);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.gender-donut-center strong {
+    margin-top: 4px;
+    color: var(--foreground);
+    font-size: 26px;
+}
+
+.gender-donut-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.gender-donut-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--secondary);
+    transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.gender-donut-row:hover {
+    transform: translateX(3px);
+    background: #eef7f1;
+    box-shadow: inset 3px 0 0 rgba(34, 197, 94, .42);
+}
+
+.gender-donut-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted-foreground);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.gender-donut-row i {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    flex: 0 0 10px;
+}
+
+.gender-donut-row strong {
+    color: var(--foreground);
+    font-size: 16px;
 }
 
 .yearly-trend-row {
@@ -800,6 +902,14 @@
     .yearly-trend-row {
         grid-template-columns: 1fr;
         gap: 4px;
+    }
+
+    .gender-donut-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .gender-donut-chart {
+        height: 260px;
     }
 
     .report-form {
@@ -1189,4 +1299,14 @@
     width: 100%;
     height: 280px;
     position: relative;
+}
+
+.interactive-chart-box {
+    border-radius: var(--radius);
+    transition: background .18s ease, box-shadow .18s ease;
+}
+
+.interactive-chart-box:hover {
+    background: rgba(241, 245, 244, .42);
+    box-shadow: inset 0 0 0 1px rgba(229, 231, 235, .72);
 }

@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react'
 import Card from '../components/common/Card'
+import CountUpNumber from '../components/common/CountUpNumber'
 import RegionEmploymentBarChart from '../components/charts/RegionEmploymentBarChart'
 import FilterSection from '../components/dashboard/FilterSection'
 import QualificationCategoryChart from '../components/dashboard/QualificationCategoryChart'
@@ -26,18 +27,6 @@ const rangeLabels: Record<string, string> = {
     'last-48-months': '최근 48개월',
 }
 
-function formatRate(value: number | null | undefined) {
-    return value !== null && value !== undefined ? `${value}%` : '-'
-}
-
-function formatPoint(value: number | null | undefined) {
-    if (value === null || value === undefined) {
-        return '-'
-    }
-
-    return `${value > 0 ? '+' : ''}${value}%p`
-}
-
 function formatPeriod(period?: string) {
     if (!period || period.length !== 6) {
         return period ?? '-'
@@ -48,6 +37,27 @@ function formatPeriod(period?: string) {
 
 function toPeriodCode(month: string) {
     return month.replace('.', '')
+}
+
+function AnimatedRate({value}: {value: number | null | undefined}) {
+    if (value === null || value === undefined) {
+        return <>-</>
+    }
+
+    return <CountUpNumber value={value} suffix="%" decimals={1}/>
+}
+
+function AnimatedPoint({value}: {value: number | null | undefined}) {
+    if (value === null || value === undefined) {
+        return <>-</>
+    }
+
+    return (
+        <>
+            {value > 0 ? '+' : ''}
+            <CountUpNumber value={value} suffix="%p" decimals={1}/>
+        </>
+    )
 }
 
 function Dashboard() {
@@ -98,17 +108,17 @@ function Dashboard() {
     const employmentCards = [
         {
             label: '전국 최신 고용률',
-            value: formatRate(employmentSummary?.nationalRate),
+            value: <AnimatedRate value={employmentSummary?.nationalRate}/>,
             description: employmentSummary ? `${latestPeriodLabel} 기준` : 'KOSIS 고용률',
         },
         {
             label: '선택 시도 고용률',
-            value: formatRate(employmentSummary?.selectedRegionRate),
+            value: <AnimatedRate value={employmentSummary?.selectedRegionRate}/>,
             description: `${selectedRegion?.label ?? '선택 시도'} / ${baseMonth}`,
         },
         {
             label: '전월 대비 증감',
-            value: formatPoint(employmentSummary?.monthlyChange),
+            value: <AnimatedPoint value={employmentSummary?.monthlyChange}/>,
             description: `${baseMonth} 기준`,
         },
     ]
@@ -193,7 +203,9 @@ function Dashboard() {
                                         <p>지역 코드 {region.regionCode}</p>
                                     </div>
 
-                                    <strong>{region.rate}%</strong>
+                                    <strong>
+                                        <CountUpNumber value={region.rate} suffix="%" decimals={1}/>
+                                    </strong>
                                 </div>
                             ))}
                         </div>

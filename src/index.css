@@ -3,6 +3,7 @@
   --primary:#22c55e; --primary-foreground:#ffffff; --secondary:#f1f5f4;
   --muted:#f1f5f4; --muted-foreground:#6b7280; --accent:#dcfce7;
   --accent-foreground:#166534; --destructive:#ef4444; --border:#e5e7eb; --radius:0.625rem;
+  --rank-1:#166534; --rank-2:#15803d; --rank-3:#16a34a; --rank-4:#4ade80; --rank-5:#86efac;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--background);color:var(--foreground);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;}

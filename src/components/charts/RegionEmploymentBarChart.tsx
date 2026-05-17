@@ -4,6 +4,44 @@ import {Bar} from 'react-chartjs-2'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
+const rankColors = ['#166534', '#15803d', '#16a34a', '#4ade80', '#86efac']
+const rankHoverColors = ['#14532d', '#166534', '#15803d', '#22c55e', '#4ade80']
+const barAnimationDuration = 1600
+const barAnimationDelay = 140
+
+type BarAnimationContext = {
+    type?: string
+    dataIndex?: number
+    index?: number
+    chart: {
+        scales: {
+            x: {
+                getPixelForValue: (value: number) => number
+            }
+        }
+    }
+}
+
+function getAnimationIndex(context: unknown) {
+    const animationContext = context as BarAnimationContext
+    return animationContext.dataIndex ?? animationContext.index ?? 0
+}
+
+function getBarDelay(context: unknown) {
+    const animationContext = context as BarAnimationContext
+
+    if (animationContext.type !== 'data') {
+        return 0
+    }
+
+    return getAnimationIndex(context) * barAnimationDelay
+}
+
+function getZeroPercentPixel(context: unknown) {
+    const animationContext = context as BarAnimationContext
+    return animationContext.chart.scales.x.getPixelForValue(0)
+}
+
 type RegionEmploymentBarChartProps = {
     data: {
         regionName: string
@@ -22,8 +60,11 @@ function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
             {
                 label: '고용률',
                 data: data.map((item) => item.rate),
-                backgroundColor: 'rgba(34, 197, 94, 0.72)',
-                borderColor: '#22c55e',
+                backgroundColor: data.map((_, index) => rankColors[index] ?? '#bbf7d0'),
+                borderColor: data.map((_, index) => rankColors[index] ?? '#bbf7d0'),
+                hoverBackgroundColor: data.map((_, index) => rankHoverColors[index] ?? '#86efac'),
+                hoverBorderColor: '#052e16',
+                hoverBorderWidth: 2,
                 borderWidth: 1,
                 borderRadius: 4,
                 borderSkipped: false,
@@ -34,9 +75,33 @@ function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
     }
 
     const chartOptions: ChartOptions<'bar'> = {
-        indexAxis: 'y' as const,
+        indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+            duration: barAnimationDuration,
+            easing: 'easeOutCubic',
+        },
+        animations: {
+            x: {
+                type: 'number',
+                from: getZeroPercentPixel,
+                duration: barAnimationDuration,
+                easing: 'easeOutCubic',
+                delay: getBarDelay,
+            },
+        },
+        interaction: {
+            mode: 'nearest',
+            axis: 'y',
+            intersect: true,
+        },
+        onHover: (event, activeElements) => {
+            const canvas = event.native?.target as HTMLCanvasElement | undefined
+            if (canvas) {
+                canvas.style.cursor = activeElements.length > 0 ? 'pointer' : 'default'
+            }
+        },
         plugins: {
             legend: {display: false},
             tooltip: {
@@ -47,7 +112,7 @@ function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
                 cornerRadius: 8,
                 displayColors: false,
                 callbacks: {
-                    label: (context: TooltipItem<'bar'>) => `고용률 ${Number(context.raw)}%`,
+                    label: (context: TooltipItem<'bar'>) => `고용률 ${Number(context.raw).toFixed(1)}%`,
                 },
             },
         },
@@ -75,8 +140,8 @@ function RegionEmploymentBarChart({data}: RegionEmploymentBarChartProps) {
     }
 
     return (
-        <div className="chart-canvas-box">
-            <Bar data={chartData} options={chartOptions}/>
+        <div className="chart-canvas-box ranking-chart-box">
+            <Bar redraw data={chartData} options={chartOptions}/>
         </div>
     )
 }
